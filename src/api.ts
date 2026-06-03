@@ -145,3 +145,16 @@ export async function saveAdminSection(section: keyof DBState, data: any, token:
   }
   return res.json();
 }
+
+export async function submitNewsletterSubscription(email: string) {
+  const res = await fetch("/api/newsletter", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Failed to subscribe to newsletter.");
+  }
+  return res.json();
+}

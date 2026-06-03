@@ -400,6 +400,47 @@ app.post("/api/donations", async (req, res) => {
   }
 });
 
+// 11. Newsletter subscriptions
+app.post("/api/newsletter", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "Email address is required." });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Please enter a valid email address." });
+    }
+
+    const db = await getDB();
+    if (!db.newsletter) {
+      db.newsletter = [];
+    }
+
+    const alreadySubscribed = db.newsletter.some((sub) => sub.email.toLowerCase() === email.toLowerCase());
+    if (alreadySubscribed) {
+      return res.json({ success: true, message: "This email is already subscribed to our newsletter!" });
+    }
+
+    const newSubscription = {
+      id: "sub-" + Date.now(),
+      email: email.trim(),
+      date: new Date().toISOString(),
+    };
+
+    db.newsletter.unshift(newSubscription);
+    await saveDB(db);
+
+    res.json({
+      success: true,
+      message: "Thank you! You've successfully subscribed to our community newsletter."
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // -------------------------------------------------------------
 // ASSET PIPELINE & SERVICE LOOPS
 // -------------------------------------------------------------

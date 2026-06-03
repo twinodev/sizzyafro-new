@@ -145,3 +145,24 @@ export interface AppSettings {
   heroBgUrl?: string;
 }
 
+export interface NewsletterSubscription {
+  id: string;
+  email: string;
+  date: string;
+}
+
+export interface DBState {
+  team: TeamMember[];
+  events: EventItem[];
+  blog: BlogPost[];
+  merchandise: MerchandiseItem[];
+  videos: VideoItem[];
+  partners: PartnerLogo[];
+  testimonials: TestimonialItem[];
+  messages: MessageItem[];
+  partnerships: PartnerApplication[];
+  donations: DonateLog[];
+  settings?: AppSettings;
+  newsletter?: NewsletterSubscription[];
+}
+

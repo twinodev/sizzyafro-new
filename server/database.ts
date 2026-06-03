@@ -19,7 +19,8 @@ import {
   MessageItem,
   PartnerApplication,
   DonateLog,
-  AppSettings
+  AppSettings,
+  NewsletterSubscription
 } from "../src/types";
 
 enum OperationType {
@@ -74,6 +75,7 @@ export interface DBState {
   partnerships: PartnerApplication[];
   donations: DonateLog[];
   settings?: AppSettings;
+  newsletter?: NewsletterSubscription[];
 }
 
 // Check if Supabase is properly configured (i.e. not placeholders)
@@ -309,6 +311,7 @@ export const INITIAL_STATE: DBState = {
   messages: [],
   partnerships: [],
   donations: [],
+  newsletter: [],
   settings: {
     adminPassword: "change-me-to-secure-password",
     logoUrl: "",
@@ -391,6 +394,7 @@ export const getDB = async (): Promise<DBState> => {
       messages: fetched.messages?.list ?? [],
       partnerships: fetched.partnerships?.list ?? [],
       donations: fetched.donations?.list ?? [],
+      newsletter: fetched.newsletter?.list ?? [],
       settings: fetched.settings ?? INITIAL_STATE.settings,
     };
 
@@ -417,6 +421,7 @@ export const saveDB = async (state: DBState): Promise<void> => {
       { id: "messages", data: { list: state.messages || [] } },
       { id: "partnerships", data: { list: state.partnerships || [] } },
       { id: "donations", data: { list: state.donations || [] } },
+      { id: "newsletter", data: { list: state.newsletter || [] } },
       { id: "settings", data: state.settings || { adminPassword: "change-me-to-secure-password", logoUrl: "", heroBgUrl: "" } },
     ];
 

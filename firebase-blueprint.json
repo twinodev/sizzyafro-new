@@ -148,6 +148,17 @@
         "logoUrl": { "type": "string" },
         "heroBgUrl": { "type": "string" }
       }
+    },
+    "NewsletterSubscription": {
+      "title": "NewsletterSubscription",
+      "description": "Submissions for community newsletter and updates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "email", "date"]
     }
   },
   "firestore": {

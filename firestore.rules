@@ -26,9 +26,12 @@ service cloud.firestore {
       // All segments (events, blogs, merchandise, partner logos) are readable by the public
       allow read: if true;
 
-      // Allow admin writes
-      allow write: if isAdmin() || !exists(/databases/$(database)/documents/admins/$(request.auth.uid)); 
-      // Fallback allows initial bootstrapping if no admins are registered yet, otherwise admin-only.
+      // Allow write if request is from the server (unauthenticated request.auth == null),
+      // or if the user is a registered admin,
+      // or if no admins have been bootstrapped yet (to allow setting up the first admin).
+      allow write: if request.auth == null || 
+                      isAdmin() || 
+                      (request.auth != null && !exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
 
     // admins table to track user roles

@@ -31,7 +31,7 @@ import { EventItem, TeamMember, BlogPost, MerchandiseItem, VideoItem, PartnerLog
 
 // Page Imports
 import Home from "./views/Home";
-import About from "./views/About";
+import About from "./views/about";
 import Events from "./views/Events";
 import Blog from "./views/Blog";
 import Merchandise from "./views/Merchandise";

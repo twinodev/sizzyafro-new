@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build",
-    "start": "node server.ts",
-    "clean": "rm -rf dist",
+    "dev": "node dev-wrapper.js",
+    "build": "next build",
+    "start": "next start -p 3000 -H 0.0.0.0",
+    "clean": "rm -rf .next dist",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

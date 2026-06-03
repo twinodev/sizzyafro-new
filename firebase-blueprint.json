@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "TeamMember": {
+      "title": "TeamMember",
+      "description": "A dance coach or management team member",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "bio": { "type": "string" },
+        "profile_picture": { "type": "string" }
+      },
+      "required": ["id", "name", "role", "bio"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "An upcoming dance battle, workshop or cultural fusion showcase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "location": { "type": "string" },
+        "flyer_url": { "type": "string" }
+      },
+      "required": ["id", "title", "date", "time", "location"]
+    },
+    "BlogPost": {
+      "title": "BlogPost",
+      "description": "A story, news piece or historical writeup detailing street dance movements",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "category": { "type": "string" },
+        "author": { "type": "string" },
+        "date": { "type": "string" },
+        "image_url": { "type": "string" },
+        "likes": { "type": "number" }
+      },
+      "required": ["id", "slug", "title", "author", "date"]
+    },
+    "MerchandiseItem": {
+      "title": "MerchandiseItem",
+      "description": "Official street dance apparel, hoodies, and footwear available for purchase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "description": { "type": "string" },
+        "image_url": { "type": "string" },
+        "stock": { "type": "number" }
+      },
+      "required": ["id", "name", "price", "description"]
+    },
+    "Video": {
+      "title": "Video",
+      "description": "YouTube choreographies and battle performance reels",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "youtube_id": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "title", "youtube_id"]
+    },
+    "PartnerLogo": {
+      "title": "PartnerLogo",
+      "description": "Corporate or institutional affiliate branding",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "logo_url": { "type": "string" }
+      },
+      "required": ["id", "name", "logo_url"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Feedback from parents, dancers, and community advocates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "author": { "type": "string" },
+        "role": { "type": "string" },
+        "content": { "type": "string" },
+        "rating": { "type": "number" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "author", "role", "content", "rating", "approved"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Contact form submissions and leads",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "subject": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "subject", "content", "date"]
+    },
+    "PartnershipApplication": {
+      "title": "PartnershipApplication",
+      "description": "Affiliates or sponsors applying to back outreach campaigns",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "companyName": { "type": "string" },
+        "contactName": { "type": "string" },
+        "email": { "type": "string" },
+        "partnerType": { "type": "string" },
+        "message": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "companyName", "contactName", "email", "partnerType", "date"]
+    },
+    "DonationLog": {
+      "title": "DonationLog",
+      "description": "Gifts and sponsors supporting the street kids fund",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "donorName": { "type": "string" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "donorName", "amount", "currency", "date"]
+    },
+    "AppSettings": {
+      "title": "AppSettings",
+      "description": "Global customization parameters",
+      "type": "object",
+      "properties": {
+        "adminPassword": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "heroBgUrl": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/danceAppState/{segmentId}": {
+      "schema": "object",
+      "description": "Storage segment for database state divisions such as team, events, merchandise, settings, etc."
+    }
+  }
+}

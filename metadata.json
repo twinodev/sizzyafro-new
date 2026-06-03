@@ -1,0 +1,6 @@
+{
+  "name": "Dance With Sizzy Afro",
+  "description": "Elite Street Dance Foundation in Mbarara, Uganda. Nurturing street dance talent, youth empowerment, events, and cultural fusion.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

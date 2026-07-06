@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { 
   Plus, Edit2, Trash2, Settings, MessageSquare, Briefcase, 
-  DollarSign, Users, Calendar, BookOpen, Video, LogOut, Check, ArrowRight, Ticket
+  DollarSign, Users, Calendar, BookOpen, Video, LogOut, Check, ArrowRight, Ticket, HeartHandshake
 } from "lucide-react";
 import { 
   saveSegment, TeamMember, EventItem, BlogPost, MerchandiseItem, 
   VideoItem, Testimonial, ContactMessage, PartnershipApplication, DonationRecord,
-  NewsletterSubscription, EventRSVP
+  NewsletterSubscription, EventRSVP, PartnerLogo
 } from "../lib/firebaseStore";
 
 interface AdminPanelProps {
@@ -19,6 +19,7 @@ interface AdminPanelProps {
     merchandise: MerchandiseItem[];
     videos: VideoItem[];
     testimonials: Testimonial[];
+    partnerLogos: PartnerLogo[];
     messages: ContactMessage[];
     partnershipApplications: PartnershipApplication[];
     donations: DonationRecord[];
@@ -39,7 +40,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   const [pin, setPin] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
-  const [activeTab, setActiveTab] = useState<"team" | "events" | "posts" | "merch" | "videos" | "inbox" | "settings" | "rsvps">("team");
+  const [activeTab, setActiveTab] = useState<"team" | "events" | "posts" | "merch" | "videos" | "inbox" | "settings" | "rsvps" | "partners">("team");
 
   // Local operational state
   const [teamList, setTeamList] = useState<TeamMember[]>(initialData.team);
@@ -48,6 +49,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   const [merchList, setMerchList] = useState<MerchandiseItem[]>(initialData.merchandise);
   const [videoList, setVideoList] = useState<VideoItem[]>(initialData.videos);
   const [rsvpList, setRsvpList] = useState<EventRSVP[]>(initialData.rsvps || []);
+  const [partnerLogosList, setPartnerLogosList] = useState<PartnerLogo[]>(initialData.partnerLogos || []);
   
   // Settings state
   const [whatsapp, setWhatsapp] = useState(initialData.meta.whatsappNumber || "256700000000");
@@ -64,9 +66,22 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   const [postForm, setPostForm] = useState<Partial<BlogPost>>({ id: "", title: "Community", category: "Community", excerpt: "", content: "", image_url: "" });
   const [merchForm, setMerchForm] = useState<Partial<MerchandiseItem>>({ id: "", name: "", price: 0, description: "", image_url: "", stock: 10, sizes: ["M", "L"] });
   const [videoForm, setVideoForm] = useState<Partial<VideoItem>>({ id: "", title: "", description: "", youtube_id: "" });
+  const [partnerLogoForm, setPartnerLogoForm] = useState<Partial<PartnerLogo>>({ id: "", name: "", logo_url: "" });
 
   const [savingState, setSavingState] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+
+  useEffect(() => {
+    setTeamList(initialData.team);
+    setEventList(initialData.events);
+    setPostList(initialData.posts);
+    setMerchList(initialData.merchandise);
+    setVideoList(initialData.videos);
+    setRsvpList(initialData.rsvps || []);
+    setPartnerLogosList(initialData.partnerLogos || []);
+    setWhatsapp(initialData.meta.whatsappNumber || "256700000000");
+    setGoogleReviews(initialData.meta.googleMapsReviewLink || "");
+  }, [initialData]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -309,6 +324,42 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
     }
   };
 
+  // Partner Logo Management
+  const savePartnerLogo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingState(true);
+    let updated: PartnerLogo[];
+
+    if (partnerLogoForm.id) {
+      updated = partnerLogosList.map(p => p.id === partnerLogoForm.id ? (partnerLogoForm as PartnerLogo) : p);
+    } else {
+      const newLogo: PartnerLogo = {
+        id: "partner-" + Date.now().toString(),
+        name: partnerLogoForm.name || "",
+        logo_url: partnerLogoForm.logo_url || `https://picsum.photos/seed/${Date.now()}/150/60`
+      };
+      updated = [...partnerLogosList, newLogo];
+    }
+
+    const success = await saveSegment("partnerLogos", updated);
+    if (success) {
+      setPartnerLogosList(updated);
+      setPartnerLogoForm({ id: "", name: "", logo_url: "" });
+      notifySave("Sponsor / Partner logo saved!");
+    }
+    setSavingState(false);
+  };
+
+  const deletePartnerLogo = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this sponsor?")) return;
+    const updated = partnerLogosList.filter(p => p.id !== id);
+    const success = await saveSegment("partnerLogos", updated);
+    if (success) {
+      setPartnerLogosList(updated);
+      notifySave("Sponsor / Partner logo removed.");
+    }
+  };
+
   // Settings Save
   const saveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -547,6 +598,17 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
             <span className="ml-auto font-mono text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.2 rounded-md font-bold">
               {rsvpList.length}
             </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("partners")}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${
+              activeTab === "partners" ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" : "text-slate-300 hover:bg-slate-900"
+            }`}
+          >
+            <HeartHandshake size={14} />
+            <span>Scrolling Sponsors</span>
+            <span className="ml-auto font-mono text-[9px] bg-slate-900 px-1.5 py-0.5 rounded-md text-slate-500">{partnerLogosList.length}</span>
           </button>
 
           <button
@@ -1317,6 +1379,130 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
                 </div>
               </div>
 
+            </div>
+          )}
+
+          {/* TAB 9: SCROLLING SPONSORS */}
+          {activeTab === "partners" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                  <h3 className="text-lg font-display font-extrabold text-white uppercase">Scrolling Sponsors & Partners</h3>
+                  <p className="text-xs text-slate-400 mt-1">Configure and manage sponsors displayed in the moving banner on the website.</p>
+                </div>
+                <span className="px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono font-bold rounded-full">
+                  Count: {partnerLogosList.length}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Form to Create/Edit Sponsor */}
+                <form onSubmit={savePartnerLogo} className="bg-slate-950 p-6 rounded-2xl border border-slate-850/80 space-y-4 lg:col-span-1 h-fit">
+                  <h4 className="text-xs font-mono font-black text-slate-400 uppercase tracking-wider">
+                    {partnerLogoForm.id ? "Edit Sponsor" : "Add Sponsor"}
+                  </h4>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Sponsor Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Uganda DanceSport Federation"
+                      value={partnerLogoForm.name || ""}
+                      onChange={(e) => setPartnerLogoForm({ ...partnerLogoForm, name: e.target.value })}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Logo Image URL</label>
+                    <input
+                      type="text"
+                      placeholder="https://..."
+                      value={partnerLogoForm.logo_url || ""}
+                      onChange={(e) => setPartnerLogoForm({ ...partnerLogoForm, logo_url: e.target.value })}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white font-mono"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1.5">
+                      Leave empty to automatically seed a beautiful placeholder logo.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <button
+                      type="submit"
+                      disabled={savingState}
+                      className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-black text-xs font-black uppercase tracking-wider rounded-xl cursor-pointer"
+                    >
+                      {savingState ? "Saving..." : partnerLogoForm.id ? "Apply Changes" : "Create Sponsor"}
+                    </button>
+                    {partnerLogoForm.id && (
+                      <button
+                        type="button"
+                        onClick={() => setPartnerLogoForm({ id: "", name: "", logo_url: "" })}
+                        className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold rounded-xl"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                {/* List of Existing Sponsors */}
+                <div className="lg:col-span-2 space-y-4">
+                  <h4 className="text-xs font-mono font-black text-slate-400 uppercase tracking-wider">Active Sponsors</h4>
+                  {partnerLogosList.length === 0 ? (
+                    <div className="p-8 text-center bg-slate-950 border border-slate-850 rounded-2xl">
+                      <p className="text-xs text-slate-400">No active sponsors found. Add a sponsor to populate the scrolling ribbon.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {partnerLogosList.map((logo) => (
+                        <div key={logo.id} className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-16 h-10 bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden border border-slate-800/80 p-1 shrink-0">
+                              <img
+                                src={logo.logo_url}
+                                alt={logo.name}
+                                className="max-w-full max-h-full object-contain filter brightness-90 contrast-125"
+                                onError={(e) => {
+                                  // Fallback for broken images
+                                  e.currentTarget.src = `https://picsum.photos/seed/${logo.id}/150/60`;
+                                }}
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <h5 className="text-xs font-bold text-white truncate" title={logo.name}>
+                                {logo.name}
+                              </h5>
+                              <span className="text-[9px] font-mono text-slate-500 block mt-0.5 truncate max-w-[150px]">
+                                ID: {logo.id}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              onClick={() => setPartnerLogoForm(logo)}
+                              className="p-1.5 bg-slate-900 border border-slate-850 hover:bg-slate-800 hover:text-white text-slate-400 rounded-lg transition-colors cursor-pointer"
+                              title="Edit Sponsor"
+                            >
+                              <Edit2 size={13} />
+                            </button>
+                            <button
+                              onClick={() => deletePartnerLogo(logo.id)}
+                              className="p-1.5 bg-slate-900 border border-slate-850 hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400 text-slate-400 rounded-lg transition-colors cursor-pointer"
+                              title="Delete Sponsor"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 

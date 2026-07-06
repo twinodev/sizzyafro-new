@@ -460,10 +460,14 @@ export async function saveSegment<K extends keyof AppData>(segment: K, value: Ap
     const docRef = doc(db, "danceAppState", segment);
     const payload = Array.isArray(value) ? { list: value } : value;
     await setDoc(docRef, payload);
+    if (localCache) {
+      localCache[segment] = value;
+    }
     return true;
   } catch (error) {
     console.error(`Firestore write failed for segment '${segment}'`, error);
     handleFirestoreError(error, OperationType.WRITE, path);
+    return false;
   }
 }
 

@@ -503,13 +503,13 @@ export default function App() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
             {[
-              { id: "about", label: "Sizzy Story" },
-              { id: "team", label: "Our Crew" },
-              { id: "events", label: "Workshops" },
-              { id: "blog", label: "Street Read" },
-              { id: "merchandise", label: "Merch Gear" },
-              { id: "videos", label: "Video Reels" },
-              { id: "testimonials", label: "Feedback" },
+              { id: "about", label: "About" },
+              { id: "team", label: "Our Team" },
+              { id: "events", label: "Events" },
+              { id: "blog", label: "Blog" },
+              { id: "merchandise", label: "Shop" },
+              { id: "videos", label: "Videos" },
+              { id: "testimonials", label: "Reviews" },
               { id: "contact", label: "Contact" },
             ].map((item) => {
               const isActive = currentView === item.id || (item.id === "events" && currentView === "event-detail") || (item.id === "blog" && currentView === "post-detail") || (item.id === "merchandise" && currentView === "merch-item");
@@ -575,14 +575,14 @@ export default function App() {
           >
             <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase text-slate-350">
               {[
-                { id: "about", label: "Sizzy Story" },
-                { id: "team", label: "Our Crew" },
-                { id: "events", label: "Workshops" },
-                { id: "blog", label: "Street Read" },
-                { id: "merchandise", label: "Merch Gear" },
-                { id: "videos", label: "Video Reels" },
-                { id: "testimonials", label: "Feedback" },
-                { id: "contact", label: "Contact Us" },
+                { id: "about", label: "About" },
+                { id: "team", label: "Our Team" },
+                { id: "events", label: "Events" },
+                { id: "blog", label: "Blog" },
+                { id: "merchandise", label: "Shop" },
+                { id: "videos", label: "Videos" },
+                { id: "testimonials", label: "Reviews" },
+                { id: "contact", label: "Contact" },
               ].map((item) => {
                 const isActive = currentView === item.id || (item.id === "events" && currentView === "event-detail") || (item.id === "blog" && currentView === "post-detail") || (item.id === "merchandise" && currentView === "merch-item");
                 return (
@@ -1829,10 +1829,10 @@ export default function App() {
             <div className="space-y-2">
               <span className="block font-mono text-[9px] text-slate-500 uppercase font-bold tracking-wider">Quick Travel</span>
               <ul className="space-y-1.5 font-medium leading-tight">
-                <li><a href="#about" className="hover:text-white transition-colors">Our Story</a></li>
-                <li><a href="#team" className="hover:text-white transition-colors">Coaches</a></li>
-                <li><a href="#events" className="hover:text-white transition-colors">Workshops</a></li>
-                <li><a href="#blog" className="hover:text-white transition-colors">Street Read</a></li>
+                <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#team" className="hover:text-white transition-colors">Our Team</a></li>
+                <li><a href="#events" className="hover:text-white transition-colors">Events</a></li>
+                <li><a href="#blog" className="hover:text-white transition-colors">Blog</a></li>
               </ul>
             </div>
             <div className="space-y-2">

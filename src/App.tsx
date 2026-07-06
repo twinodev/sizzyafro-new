@@ -12,7 +12,6 @@ import { motion, AnimatePresence } from "motion/react";
 import heroDanceImg from "./assets/images/hero_dance_sizzy_1781716944039.jpg";
 
 // Sub-components & Stores
-import BeatArena from "./components/BeatArena";
 import AdminPanel from "./components/AdminPanel";
 import { 
   fetchAllAppData, getDefaultAppData, saveSegment, clearCache, TeamMember, EventItem, BlogPost, 
@@ -34,6 +33,7 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isReviewOpen, setIsReviewOpen] = useState<boolean>(false);
   const [isNewsletterOpen, setIsNewsletterOpen] = useState<boolean>(false);
+  const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
   
   // Submit Forms
   const [contactForm, setContactForm] = useState({ name: "", email: "", subject: "", content: "" });
@@ -440,6 +440,15 @@ export default function App() {
     alert(`The shareable link was successfully copied to your clipboard:\n${shareUrl}`);
   };
 
+  const handleEventShare = (eventId: string, title: string) => {
+    const shareUrl = `${window.location.origin}/#/event-detail/${eventId}`;
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedEventId(eventId);
+    setTimeout(() => {
+      setCopiedEventId(null);
+    }, 2000);
+  };
+
   // Main loading check (never blocks because appState is pre-initialized with defaults)
   if (!appState) {
     return (
@@ -678,15 +687,6 @@ export default function App() {
                   <PinIcon text="Lakeside" />
                 </div>
               </div>
-            </section>
-
-            {/* INTEGRATED DRUM SEQUENCER ARENA */}
-            <section className="space-y-6">
-              <div className="text-center max-w-xl mx-auto space-y-2">
-                <span className="inline-block text-xs text-orange-400 font-mono uppercase font-black tracking-widest">Interactive Practice Hub</span>
-                <h2 className="text-2xl sm:text-3xl font-display font-black text-white uppercase">Practice with the Rhythm Engine</h2>
-              </div>
-              <BeatArena />
             </section>
 
             {/* CORE ORGANIZATIONAL CORE VALUES */}
@@ -1088,10 +1088,19 @@ export default function App() {
 
               return (
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6">
-                  <a href="#events" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-white font-bold">
-                    <ArrowLeft size={12} />
-                    <span>Back to Calendar</span>
-                  </a>
+                  <div className="flex items-center justify-between">
+                    <a href="#events" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-white font-bold transition-colors">
+                      <ArrowLeft size={12} />
+                      <span>Back to Calendar</span>
+                    </a>
+                    <button
+                      onClick={() => handleEventShare(ev.id, ev.title)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700/80 text-slate-200 hover:text-white text-[11px] rounded-xl font-bold border border-slate-700/50 transition-all cursor-pointer"
+                    >
+                      <Share2 size={12} className={copiedEventId === ev.id ? "text-emerald-400" : ""} />
+                      <span>{copiedEventId === ev.id ? "Copied Link!" : "Share Event"}</span>
+                    </button>
+                  </div>
 
                   <div className="relative h-[280px] rounded-2xl overflow-hidden border border-slate-800">
                     <img src={ev.flyer_url} alt={ev.title} className="w-full h-full object-cover" />

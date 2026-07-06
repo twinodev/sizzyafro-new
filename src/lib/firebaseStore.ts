@@ -404,16 +404,34 @@ export async function loadSegment<K extends keyof AppData>(segment: K): Promise<
   const path = `danceAppState/${segment}`;
   try {
     const docRef = doc(db, "danceAppState", segment);
-    const snap = await getDoc(docRef);
-    if (snap.exists()) {
+    const snap = await Promise.race([
+      getDoc(docRef),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000))
+    ]);
+    if (snap && snap.exists()) {
       const data = snap.data();
-      return (data.list || data.value || data) as AppData[K];
+      const val = data.list || data.value || data;
+      
+      // Ensure structural type matching
+      if (segment !== "meta") {
+        if (Array.isArray(val)) {
+          return val as AppData[K];
+        } else {
+          console.warn(`Firestore read for segment '${segment}' returned non-array. Falling back to default.`);
+        }
+      } else {
+        if (val && typeof val === "object" && !Array.isArray(val)) {
+          return { ...DEFAULT_SETTINGS, ...val } as AppData[K];
+        } else {
+          console.warn(`Firestore read for segment 'meta' returned non-object. Falling back to default.`);
+        }
+      }
     }
   } catch (error) {
     if (error instanceof Error && error.message.includes("permission")) {
       handleFirestoreError(error, OperationType.GET, path);
     }
-    console.warn(`Firestore read failed for segment '${segment}'. Using premium defaults.`, error);
+    console.warn(`Firestore read timed out or failed for segment '${segment}'. Using premium defaults.`, error);
   }
 
   // Segment fallbacks
@@ -505,4 +523,23 @@ export async function fetchAllAppData(): Promise<AppData> {
 // Invalidation Helper
 export function clearCache() {
   localCache = null;
+}
+
+// Full default app state fallback provider
+export function getDefaultAppData(): AppData {
+  return {
+    team: DEFAULT_TEAM,
+    events: DEFAULT_EVENTS,
+    posts: DEFAULT_POSTS,
+    merchandise: DEFAULT_MERCHANDISE,
+    videos: DEFAULT_VIDEOS,
+    testimonials: DEFAULT_TESTIMONIALS,
+    partnerLogos: DEFAULT_PARTNER_LOGOS,
+    messages: [],
+    partnershipApplications: [],
+    donations: [],
+    newsletter: [],
+    rsvps: [],
+    meta: DEFAULT_SETTINGS
+  };
 }

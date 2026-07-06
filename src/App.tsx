@@ -15,7 +15,7 @@ import heroDanceImg from "./assets/images/hero_dance_sizzy_1781716944039.jpg";
 import BeatArena from "./components/BeatArena";
 import AdminPanel from "./components/AdminPanel";
 import { 
-  fetchAllAppData, saveSegment, clearCache, TeamMember, EventItem, BlogPost, 
+  fetchAllAppData, getDefaultAppData, saveSegment, clearCache, TeamMember, EventItem, BlogPost, 
   MerchandiseItem, VideoItem, Testimonial, ContactMessage, PartnershipApplication, DonationRecord,
   NewsletterSubscription, EventRSVP
 } from "./lib/firebaseStore";
@@ -24,26 +24,10 @@ export default function App() {
   const [currentView, setCurrentView] = useState<string>("home");
   const [selectedSubItem, setSelectedSubItem] = useState<string | null>(null); // Details page ID
 
-  // Database unified state
-  const [loading, setLoading] = useState<boolean>(true);
-  const [appState, setAppState] = useState<{
-    team: TeamMember[];
-    events: EventItem[];
-    posts: BlogPost[];
-    merchandise: MerchandiseItem[];
-    videos: VideoItem[];
-    testimonials: Testimonial[];
-    partnerLogos: Array<{ id: string; name: string; logo_url: string }>;
-    messages: ContactMessage[];
-    partnershipApplications: PartnershipApplication[];
-    donations: DonationRecord[];
-    newsletter: NewsletterSubscription[];
-    rsvps: EventRSVP[];
-    meta: {
-      whatsappNumber?: string;
-      googleMapsReviewLink?: string;
-    };
-  } | null>(null);
+  // Database unified state - Instant load design with fallback data pre-initialized
+  const [appState, setAppState] = useState<ReturnType<typeof getDefaultAppData>>(getDefaultAppData());
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isSyncing, setIsSyncing] = useState<boolean>(true);
 
   // Interaction Modals
   const [isDonateOpen, setIsDonateOpen] = useState<boolean>(false);
@@ -85,15 +69,17 @@ export default function App() {
   const [replyInput, setReplyInput] = useState<string>("");
   const [commentAuthor, setCommentAuthor] = useState<string>("");
 
-  // Load Firestore or defaults
+  // Load Firestore or defaults in the background
   const syncState = async () => {
     try {
       const data = await fetchAllAppData();
-      setAppState(data);
+      if (data) {
+        setAppState(data);
+      }
     } catch (err) {
-      console.warn("Could not sync Firestore data. Running local memory defaults.", err);
+      console.warn("Could not sync Firestore data. Staying with memory defaults.", err);
     } finally {
-      setLoading(false);
+      setIsSyncing(false);
     }
   };
 
@@ -454,8 +440,8 @@ export default function App() {
     alert(`The shareable link was successfully copied to your clipboard:\n${shareUrl}`);
   };
 
-  // Main loading Skeletons
-  if (loading || !appState) {
+  // Main loading check (never blocks because appState is pre-initialized with defaults)
+  if (!appState) {
     return (
       <div className="min-h-screen bg-[#070a13] flex flex-col items-center justify-center text-center p-6 bg-radial-at-t from-slate-900 via-slate-950 to-black">
         <Sparkles className="text-orange-500 animate-spin mb-4" size={42} />

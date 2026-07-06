@@ -27,6 +27,8 @@ interface AdminPanelProps {
     meta: {
       whatsappNumber?: string;
       googleMapsReviewLink?: string;
+      adminPasswordHash?: string;
+      isConfigured?: boolean;
     };
   };
   onSave: () => void;
@@ -50,6 +52,11 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   // Settings state
   const [whatsapp, setWhatsapp] = useState(initialData.meta.whatsappNumber || "256700000000");
   const [googleReviews, setGoogleReviews] = useState(initialData.meta.googleMapsReviewLink || "");
+  const [currentPasswordInput, setCurrentPasswordInput] = useState("");
+  const [newPasswordInput, setNewPasswordInput] = useState("");
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   // Form input builders
   const [teamForm, setTeamForm] = useState<Partial<TeamMember>>({ id: "", name: "", role: "", bio: "", achievements: "", instagram: "", profile_picture: "" });
@@ -63,7 +70,14 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === "sizzyafro2025" || pin === "12345" || pin === "admin") {
+    const customPasscode = initialData.meta.adminPasswordHash;
+    const isCorrect = 
+      (customPasscode && pin === customPasscode) || 
+      pin === "sizzyafro2025" || 
+      pin === "12345" || 
+      pin === "admin";
+      
+    if (isCorrect) {
       setIsAuthenticated(true);
       setAuthError("");
     } else {
@@ -308,6 +322,56 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
     const success = await saveSegment("meta", updatedSettings);
     if (success) {
       notifySave("Global customization parameters saved strictly to Firestore!");
+    }
+    setSavingState(false);
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!newPasswordInput) {
+      setPasswordError("New passcode cannot be empty.");
+      return;
+    }
+
+    if (newPasswordInput !== confirmPasswordInput) {
+      setPasswordError("New passcodes do not match.");
+      return;
+    }
+
+    // Verify current password against custom stored password or default fallbacks
+    const currentStoredPin = initialData.meta.adminPasswordHash;
+    const isCurrentValid = 
+      (currentStoredPin && currentPasswordInput === currentStoredPin) ||
+      currentPasswordInput === "sizzyafro2025" ||
+      currentPasswordInput === "12345" ||
+      currentPasswordInput === "admin";
+
+    if (!isCurrentValid) {
+      setPasswordError("Current passcode is incorrect.");
+      return;
+    }
+
+    setSavingState(true);
+    const updatedSettings = {
+      ...initialData.meta,
+      adminPasswordHash: newPasswordInput,
+      whatsappNumber: whatsapp,
+      googleMapsReviewLink: googleReviews,
+      isConfigured: true
+    };
+
+    const success = await saveSegment("meta", updatedSettings);
+    if (success) {
+      notifySave("Administrator passcode updated successfully!");
+      setPasswordSuccess("Passcode updated successfully!");
+      setCurrentPasswordInput("");
+      setNewPasswordInput("");
+      setConfirmPasswordInput("");
+    } else {
+      setPasswordError("Failed to update passcode in database.");
     }
     setSavingState(false);
   };
@@ -1259,40 +1323,102 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
           {/* TAB 7: GLOBAL SYSTEM SETTINGS */}
           {activeTab === "settings" && (
             <div className="space-y-6">
-              <h3 className="text-lg font-display font-extrabold text-white">Global Configuration Parameters</h3>
+              <h3 className="text-lg font-display font-extrabold text-white">Global Configuration & Security</h3>
 
-              <form onSubmit={saveSettings} className="bg-slate-950 p-6 rounded-2xl border border-slate-850/80 max-w-xl space-y-4">
-                <div>
-                  <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Support Hotline (Floating WhatsApp Number)</label>
-                  <input
-                    type="text"
-                    placeholder="256700000000"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono text-white"
-                  />
-                  <p className="text-[10px] text-slate-500 mt-1.5">Enter direct dialect with country prefix (e.g., <span className="font-mono text-orange-400">256...</span> for Uganda). Avoid any spaces, pluses, or dashes.</p>
-                </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Global Parameters Form */}
+                <form onSubmit={saveSettings} className="bg-slate-950 p-6 rounded-2xl border border-slate-850/80 space-y-4">
+                  <h4 className="text-xs font-mono font-black text-slate-400 uppercase tracking-wider">System Parameters</h4>
+                  
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Support Hotline (Floating WhatsApp Number)</label>
+                    <input
+                      type="text"
+                      placeholder="256700000000"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono text-white"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1.5">Enter direct dialect with country prefix (e.g., <span className="font-mono text-orange-400">256...</span> for Uganda). Avoid any spaces, pluses, or dashes.</p>
+                  </div>
 
-                <div>
-                  <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Google Maps Business Review solicitation link</label>
-                  <input
-                    type="text"
-                    placeholder="https://g.page/r/sizzyafro-mbarara/review"
-                    value={googleReviews}
-                    onChange={(e) => setGoogleReviews(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-medium text-white"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Google Maps Business Review solicitation link</label>
+                    <input
+                      type="text"
+                      placeholder="https://g.page/r/sizzyafro-mbarara/review"
+                      value={googleReviews}
+                      onChange={(e) => setGoogleReviews(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-medium text-white"
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={savingState}
-                  className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-black text-xs font-black uppercase tracking-wider rounded-xl cursor-pointer"
-                >
-                  {savingState ? "Saving to Firestore..." : "Write System Global Parameters"}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={savingState}
+                    className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-black text-xs font-black uppercase tracking-wider rounded-xl cursor-pointer"
+                  >
+                    {savingState ? "Saving to Firestore..." : "Write System Global Parameters"}
+                  </button>
+                </form>
+
+                {/* Administrator Security Form */}
+                <form onSubmit={handlePasswordChange} className="bg-slate-950 p-6 rounded-2xl border border-slate-850/80 space-y-4">
+                  <h4 className="text-xs font-mono font-black text-slate-400 uppercase tracking-wider">Administrator Security</h4>
+                  
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Current Access Passcode</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={currentPasswordInput}
+                      onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">New Access Passcode</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={newPasswordInput}
+                      onChange={(e) => setNewPasswordInput(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Confirm New Passcode</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPasswordInput}
+                      onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                      required
+                    />
+                  </div>
+
+                  {passwordError && (
+                    <p className="text-xs text-red-400 font-bold bg-red-400/10 p-2.5 rounded-xl">{passwordError}</p>
+                  )}
+
+                  {passwordSuccess && (
+                    <p className="text-xs text-emerald-400 font-bold bg-emerald-500/10 p-2.5 rounded-xl">{passwordSuccess}</p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={savingState}
+                    className="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-black text-xs font-black uppercase tracking-wider rounded-xl cursor-pointer"
+                  >
+                    {savingState ? "Saving to Firestore..." : "Update Passcode"}
+                  </button>
+                </form>
+              </div>
             </div>
           )}
 

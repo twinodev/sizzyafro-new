@@ -185,18 +185,19 @@ export default function BeatArena() {
   }, [isLoopActive, bpm]);
 
   return (
-    <div id="beat-practice-arena" className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
+    <div id="beat-practice-arena" className="p-6 sm:p-8 rounded-3xl bg-slate-900/40 backdrop-blur-md border border-slate-800/80 shadow-2xl relative overflow-hidden transition-all duration-300">
+      <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-orange-500/10 to-amber-500/0 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
       
       {/* Title & Interactive Switch */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-800/60">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Radio className="text-orange-500 animate-pulse" size={18} />
-            <span className="font-mono text-xs uppercase tracking-widest text-orange-400 font-extrabold">SIZZY BEAT LAB</span>
+            <Radio className="text-orange-500 animate-pulse" size={16} />
+            <span className="font-mono text-[10px] tracking-widest text-orange-500 font-extrabold uppercase">Freestyle Training Hub</span>
           </div>
-          <h3 className="text-xl font-display font-extrabold text-white">Dynamic Groove Practice Station</h3>
-          <p className="text-xs text-slate-300">Tap manual pads or start the syncopated lock-loop to practice freestyle moves.</p>
+          <h3 className="text-2xl font-display font-black text-white tracking-tight">SIZZY BEAT SEQUENCER</h3>
+          <p className="text-xs text-slate-400">Trigger low-frequency sub drums, snaps, or start the automated syncopated loop to practice street dance locks.</p>
         </div>
 
         <button
@@ -204,16 +205,16 @@ export default function BeatArena() {
             setIsLoopActive(!isLoopActive);
             isAudioUnlocked.current = true;
           }}
-          className={`px-5 py-2.5 rounded-xl font-extrabold text-xs tracking-wider flex items-center gap-2 shadow-lg transition-all duration-300 cursor-pointer ${
+          className={`px-6 py-3 rounded-xl font-extrabold text-xs tracking-wider flex items-center justify-center gap-2.5 shadow-lg transition-all duration-300 transform active:scale-95 cursor-pointer ${
             isLoopActive
-              ? "bg-red-500 hover:bg-red-600 text-white shadow-red-500/20"
-              : "bg-gradient-to-r from-orange-500 to-amber-500 hover:scale-[1.02] text-black shadow-orange-500/20"
+              ? "bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/20"
+              : "bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-orange-500/10 text-black"
           }`}
         >
           {isLoopActive ? (
             <>
               <Pause size={14} className="fill-current" />
-              <span>PAUSE SEQUENCE</span>
+              <span>STOP LOOP RUN</span>
             </>
           ) : (
             <>
@@ -225,41 +226,46 @@ export default function BeatArena() {
       </div>
 
       {/* BPM Controller */}
-      <div className="mb-6 p-4 rounded-2xl bg-slate-950/40 border border-slate-850/60 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-2 shrink-0">
+      <div className="mb-8 p-5 rounded-2xl bg-slate-950/60 border border-slate-800/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2.5 shrink-0">
           <Sliders className="text-slate-400" size={14} />
-          <span className="text-[11px] font-mono font-bold text-slate-300">TEMPO: <span className="text-orange-400">{bpm} BPM</span></span>
+          <span className="text-xs font-mono font-bold text-slate-300">PRACTICE TEMPO: <span className="text-orange-400 font-black">{bpm} BPM</span></span>
         </div>
-        <input
-          type="range"
-          min="80"
-          max="145"
-          value={bpm}
-          onChange={(e) => setBpm(Number(e.target.value))}
-          className="w-full accent-orange-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg appearance-none"
-        />
+        <div className="w-full sm:flex-1 max-w-md flex items-center gap-3">
+          <span className="text-[10px] font-mono text-slate-600">80</span>
+          <input
+            type="range"
+            min="80"
+            max="145"
+            value={bpm}
+            onChange={(e) => setBpm(Number(e.target.value))}
+            className="w-full accent-orange-500 cursor-pointer h-1.5 bg-slate-900 rounded-lg appearance-none border border-slate-800/40"
+          />
+          <span className="text-[10px] font-mono text-slate-600">145</span>
+        </div>
       </div>
 
       {/* Grid Pads */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* PAD 1: STREET BASS (KICK) */}
         <button
           onClick={() => triggerPad("kick")}
-          className={`h-24 rounded-2xl border transition-all duration-150 p-4 text-left flex flex-col justify-between cursor-pointer select-none ${
+          className={`h-28 rounded-2xl border transition-all duration-200 p-4.5 text-left flex flex-col justify-between cursor-pointer select-none relative group overflow-hidden ${
             manualActive.kick || (isLoopActive && (activeStep === 0 || activeStep === 4 || activeStep === 6))
-              ? "bg-orange-500/20 border-orange-500/80 shadow-[0_0_15px_rgba(249,115,22,0.3)] scale-[1.03]"
-              : "bg-slate-950/80 border-slate-800 hover:border-orange-500/50"
+              ? "bg-orange-500/10 border-orange-500/80 shadow-[0_0_20px_rgba(249,115,22,0.2)] scale-[1.02]"
+              : "bg-slate-950/40 border-slate-800/80 hover:border-orange-500/40 hover:bg-slate-950/80"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-mono text-slate-500 uppercase font-black tracking-wider">TRACK 01</span>
-            <div className={`w-2 h-2 rounded-full ${
+          <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="flex items-center justify-between z-10">
+            <span className="text-[9px] font-mono text-slate-500 tracking-wider font-bold">PAD 01</span>
+            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${
               manualActive.kick || (isLoopActive && (activeStep === 0 || activeStep === 4 || activeStep === 6))
-                ? "bg-orange-500"
-                : "bg-slate-700"
+                ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110"
+                : "bg-slate-800"
             }`} />
           </div>
-          <div>
+          <div className="z-10">
             <span className="block font-black font-display text-xs text-white uppercase tracking-tight">STREET BASS</span>
             <span className="text-[9px] text-slate-400 font-mono">Analog Kick Sub</span>
           </div>
@@ -268,89 +274,92 @@ export default function BeatArena() {
         {/* PAD 2: CRISP SNARE */}
         <button
           onClick={() => triggerPad("snare")}
-          className={`h-24 rounded-2xl border transition-all duration-150 p-4 text-left flex flex-col justify-between cursor-pointer select-none ${
+          className={`h-28 rounded-2xl border transition-all duration-200 p-4.5 text-left flex flex-col justify-between cursor-pointer select-none relative group overflow-hidden ${
             manualActive.snare || (isLoopActive && (activeStep === 3 || activeStep === 7))
-              ? "bg-rose-500/20 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.3)] scale-[1.03]"
-              : "bg-slate-950/80 border-slate-800 hover:border-rose-500/50"
+              ? "bg-rose-500/10 border-rose-500/80 shadow-[0_0_20px_rgba(244,63,94,0.2)] scale-[1.02]"
+              : "bg-slate-950/40 border-slate-800/80 hover:border-rose-500/40 hover:bg-slate-950/80"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-mono text-slate-500 uppercase font-black tracking-wider">TRACK 02</span>
-            <div className={`w-2 h-2 rounded-full ${
+          <div className="absolute inset-0 bg-gradient-to-b from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="flex items-center justify-between z-10">
+            <span className="text-[9px] font-mono text-slate-500 tracking-wider font-bold">PAD 02</span>
+            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${
               manualActive.snare || (isLoopActive && (activeStep === 3 || activeStep === 7))
-                ? "bg-rose-500"
-                : "bg-slate-700"
+                ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)] scale-110"
+                : "bg-slate-800"
             }`} />
           </div>
-          <div>
-            <span className="block font-black font-display text-xs text-white uppercase tracking-tight">SIZZY SNAP</span>
-            <span className="text-[9px] text-slate-400 font-mono">Friction Clack</span>
+          <div className="z-10">
+            <span className="block font-black font-display text-xs text-white uppercase tracking-tight">RHYTHM SNAP</span>
+            <span className="text-[9px] text-slate-400 font-mono">Friction Snare clack</span>
           </div>
         </button>
 
         {/* PAD 3: CYMBAL SLAM */}
         <button
           onClick={() => triggerPad("hihat")}
-          className={`h-24 rounded-2xl border transition-all duration-150 p-4 text-left flex flex-col justify-between cursor-pointer select-none ${
+          className={`h-28 rounded-2xl border transition-all duration-200 p-4.5 text-left flex flex-col justify-between cursor-pointer select-none relative group overflow-hidden ${
             manualActive.hihat || (isLoopActive && (activeStep === 1 || activeStep === 4 || activeStep === 5 || activeStep === 7))
-              ? "bg-amber-400/20 border-amber-400/80 shadow-[0_0_15px_rgba(245,158,11,0.3)] scale-[1.03]"
-              : "bg-slate-950/80 border-slate-800 hover:border-amber-400/50"
+              ? "bg-amber-400/10 border-amber-400/80 shadow-[0_0_20px_rgba(245,158,11,0.2)] scale-[1.02]"
+              : "bg-slate-950/40 border-slate-800/80 hover:border-amber-400/40 hover:bg-slate-950/80"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-mono text-slate-500 uppercase font-black tracking-wider">TRACK 03</span>
-            <div className={`w-2 h-2 rounded-full ${
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="flex items-center justify-between z-10">
+            <span className="text-[9px] font-mono text-slate-500 tracking-wider font-bold">PAD 03</span>
+            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${
               manualActive.hihat || (isLoopActive && (activeStep === 1 || activeStep === 4 || activeStep === 5 || activeStep === 7))
-                ? "bg-amber-400"
-                : "bg-slate-700"
+                ? "bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.8)] scale-110"
+                : "bg-slate-800"
             }`} />
           </div>
-          <div>
-            <span className="block font-black font-display text-xs text-white uppercase tracking-tight">CYMBAL SLAM</span>
-            <span className="text-[9px] text-slate-400 font-mono">Hiss Transient</span>
+          <div className="z-10">
+            <span className="block font-black font-display text-xs text-white uppercase tracking-tight">CYMBAL SHIMMER</span>
+            <span className="text-[9px] text-slate-400 font-mono">Crisp Hat Transient</span>
           </div>
         </button>
 
-        {/* PAD 4: AFRO SWEEP (SYNTH) */}
+        {/* PAD 4: AFRO SWEEP */}
         <button
           onClick={() => triggerPad("synth")}
-          className={`h-24 rounded-2xl border transition-all duration-150 p-4 text-left flex flex-col justify-between cursor-pointer select-none ${
+          className={`h-28 rounded-2xl border transition-all duration-200 p-4.5 text-left flex flex-col justify-between cursor-pointer select-none relative group overflow-hidden ${
             manualActive.synth || (isLoopActive && (activeStep === 2 || activeStep === 6))
-              ? "bg-purple-500/20 border-purple-500/80 shadow-[0_0_15px_rgba(168,85,247,0.3)] scale-[1.03]"
-              : "bg-slate-950/80 border-slate-800 hover:border-purple-500/50"
+              ? "bg-purple-500/10 border-purple-500/80 shadow-[0_0_20px_rgba(168,85,247,0.2)] scale-[1.02]"
+              : "bg-slate-950/40 border-slate-800/80 hover:border-purple-500/40 hover:bg-slate-950/80"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] font-mono text-slate-500 uppercase font-black tracking-wider">TRACK 04</span>
-            <div className={`w-2 h-2 rounded-full ${
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="flex items-center justify-between z-10">
+            <span className="text-[9px] font-mono text-slate-500 tracking-wider font-bold">PAD 04</span>
+            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${
               manualActive.synth || (isLoopActive && (activeStep === 2 || activeStep === 6))
-                ? "bg-purple-500"
-                : "bg-slate-700"
+                ? "bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.8)] scale-110"
+                : "bg-slate-800"
             }`} />
           </div>
-          <div>
-            <span className="block font-black font-display text-xs text-white uppercase tracking-tight">AFRO SWEEP</span>
-            <span className="text-[9px] text-slate-400 font-mono">Sawtooth Pitch Pitch</span>
+          <div className="z-10">
+            <span className="block font-black font-display text-xs text-white uppercase tracking-tight">AFRO SYNTH SWEEP</span>
+            <span className="text-[9px] text-slate-400 font-mono">Analog Sawtooth Sweep</span>
           </div>
         </button>
       </div>
 
       {/* Real-time ticker */}
-      <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-850 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-1.5 pl-2">
+      <div className="p-4 bg-slate-950/70 rounded-2xl border border-slate-800/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2 shrink-0">
           <Music className="text-orange-500" size={13} />
-          <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">GRID TRAX ENGINE:</span>
+          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-black">LOOP SEQUENCE STEPPER:</span>
         </div>
-        <div className="flex gap-1.5 flex-1 justify-end max-w-sm sm:max-w-md">
+        <div className="flex gap-2 w-full sm:flex-1 justify-end max-w-sm sm:max-w-md">
           {[0, 1, 2, 3, 4, 5, 6, 7].map((num) => (
             <div
               key={num}
-              className={`h-6 rounded-md flex-1 text-[9px] font-mono font-extrabold flex items-center justify-center transition-all duration-150 ${
+              className={`h-8 rounded-lg flex-1 text-[10px] font-mono font-black flex items-center justify-center transition-all duration-200 border ${
                 activeStep === num
-                  ? "bg-gradient-to-t from-orange-500 to-amber-400 text-black shadow-md scale-y-110"
+                  ? "bg-gradient-to-t from-orange-500 to-amber-400 text-black border-orange-400 shadow-md scale-y-105"
                   : num % 4 === 0 
-                    ? "bg-slate-800 text-slate-400 border border-slate-700/50"
-                    : "bg-slate-900/60 text-slate-600 border border-slate-800/40"
+                    ? "bg-slate-800/80 text-slate-300 border-slate-700/60"
+                    : "bg-slate-900/40 text-slate-550 border-slate-800/40"
               }`}
             >
               0{num + 1}

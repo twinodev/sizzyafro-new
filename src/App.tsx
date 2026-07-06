@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { 
   Sparkles, MapPin, Calendar, Flame, Ticket, Check, User, Instagram, Youtube, 
   Play, Heart, X, Compass, Clock, Award, Users, Zap, Info, Phone, Mail, Plus, 
-  DollarSign, MessageSquare, Share2, Send, Eye, ArrowLeft, Gift, MessageCircle, Star, Search
+  DollarSign, MessageSquare, Share2, Send, Eye, ArrowLeft, Gift, MessageCircle, Star, Search, Menu
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -493,35 +493,54 @@ export default function App() {
       </div>
 
       {/* GLOBAL HEADER BAR */}
-      <header className="sticky top-0 left-0 w-full z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-850/60 shadow-lg px-6 py-4">
+      <header className="sticky top-0 left-0 w-full z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-900/60 shadow-lg px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <a href="#home" className="flex items-center gap-2.5 group">
+          <a href="#home" className="flex items-center gap-3 group">
             <span className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center font-display font-black text-black text-xl shadow-md group-hover:rotate-6 transition-all duration-300">
               S
             </span>
             <div>
               <span className="block font-display font-black leading-none text-white tracking-tight uppercase group-hover:text-orange-400 transition-colors">SIZ-AFRO</span>
-              <span className="text-[9px] font-mono font-bold tracking-widest text-[#fa5216]">Uganda • Est 2025</span>
+              <span className="text-[9px] font-mono font-bold tracking-widest text-orange-500/80">Mbarara • Est 2025</span>
             </div>
           </a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-300">
-            <a href="#about" className="hover:text-white transition-colors">Sizzy Story</a>
-            <a href="#team" className="hover:text-white transition-colors">Our Crew</a>
-            <a href="#events" className="hover:text-white transition-colors">Workshops</a>
-            <a href="#blog" className="hover:text-white transition-colors">Street Read</a>
-            <a href="#merchandise" className="hover:text-white transition-colors">Merch Gear</a>
-            <a href="#videos" className="hover:text-white transition-colors">Video Reels</a>
-            <a href="#testimonials" className="hover:text-white transition-colors">Feedback</a>
-            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+          <nav className="hidden lg:flex items-center gap-6 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
+            {[
+              { id: "about", label: "Sizzy Story" },
+              { id: "team", label: "Our Crew" },
+              { id: "events", label: "Workshops" },
+              { id: "blog", label: "Street Read" },
+              { id: "merchandise", label: "Merch Gear" },
+              { id: "videos", label: "Video Reels" },
+              { id: "testimonials", label: "Feedback" },
+              { id: "contact", label: "Contact" },
+            ].map((item) => {
+              const isActive = currentView === item.id || (item.id === "events" && currentView === "event-detail") || (item.id === "blog" && currentView === "post-detail") || (item.id === "merchandise" && currentView === "merch-item");
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className={`hover:text-white transition-colors relative py-1 ${isActive ? "text-orange-500" : "text-slate-450"}`}
+                >
+                  {item.label}
+                  {isActive && (
+                    <motion.span 
+                      layoutId="activeNavIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.8)]" 
+                    />
+                  )}
+                </a>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-3">
             {/* Donate Trigger Button */}
             <button
               onClick={() => setIsDonateOpen(true)}
-              className="px-4.5 py-2 rounded-xl bg-orange-500 text-black font-extrabold text-xs tracking-wider hover:bg-orange-600 transition-all uppercase shadow-lg shadow-orange-500/10 cursor-pointer"
+              className="px-4.5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 active:scale-95 text-black font-extrabold text-[10px] tracking-wider transition-all uppercase shadow-lg shadow-orange-500/10 cursor-pointer"
             >
               DONATE
             </button>
@@ -529,18 +548,22 @@ export default function App() {
             {/* Admin Backstage Portal shortcut link */}
             <a
               href="#admin"
-              className="hidden sm:inline-flex items-center justify-center p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition"
-              title="Crawl-Free Admin Console"
+              className={`hidden sm:inline-flex items-center justify-center p-2.5 rounded-xl border transition ${
+                currentView === "admin"
+                  ? "bg-orange-500/10 border-orange-500/50 text-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.15)]"
+                  : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+              }`}
+              title="Sizzy Studio Coordinator Portal"
             >
-              <Zap size={15} />
+              <Zap size={14} />
             </a>
 
             {/* Responsive Menu Hamburg */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-slate-300 hover:text-white lg:hidden border border-slate-850 bg-slate-900/60 rounded-xl cursor-not-allowed"
+              className="p-2.5 text-slate-300 hover:text-white lg:hidden border border-slate-800 bg-slate-900/60 rounded-xl cursor-pointer transition-colors active:scale-95"
             >
-              <Users size={16} />
+              {isMobileMenuOpen ? <X size={15} /> : <Menu size={15} />}
             </button>
           </div>
         </div>
@@ -553,17 +576,31 @@ export default function App() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-b border-slate-850 bg-slate-950 p-6 space-y-4"
+            className="lg:hidden border-b border-slate-900/80 bg-slate-950 p-6 space-y-4"
           >
-            <div className="grid grid-cols-2 gap-3 text-xs font-bold uppercase text-slate-300">
-              <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Sizzy Story</a>
-              <a href="#team" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Our Crew</a>
-              <a href="#events" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Workshops</a>
-              <a href="#blog" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Street Read</a>
-              <a href="#merchandise" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Merch Gear</a>
-              <a href="#videos" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Video Reels</a>
-              <a href="#testimonials" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Feedback</a>
-              <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-white">Contact Us</a>
+            <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase text-slate-350">
+              {[
+                { id: "about", label: "Sizzy Story" },
+                { id: "team", label: "Our Crew" },
+                { id: "events", label: "Workshops" },
+                { id: "blog", label: "Street Read" },
+                { id: "merchandise", label: "Merch Gear" },
+                { id: "videos", label: "Video Reels" },
+                { id: "testimonials", label: "Feedback" },
+                { id: "contact", label: "Contact Us" },
+              ].map((item) => {
+                const isActive = currentView === item.id || (item.id === "events" && currentView === "event-detail") || (item.id === "blog" && currentView === "post-detail") || (item.id === "merchandise" && currentView === "merch-item");
+                return (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`hover:text-white transition-colors ${isActive ? "text-orange-500 font-black" : "text-slate-400"}`}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </div>
           </motion.div>
         )}
@@ -589,63 +626,67 @@ export default function App() {
           <div className="space-y-16">
             
             {/* HERO MODULE SECTION */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/10 rounded-3xl p-6 border border-slate-850/40 relative overflow-hidden">
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/40 backdrop-blur-sm rounded-3xl p-6 sm:p-8 border border-slate-800/80 relative overflow-hidden">
+              {/* Decorative Spotlight Radiants */}
+              <div className="absolute top-0 left-1/4 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -right-20 -top-20 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
               <div className="col-span-1 lg:col-span-6 space-y-6 relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full font-mono text-[10px] tracking-widest font-black uppercase">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded-full font-mono text-[10px] tracking-widest font-black uppercase">
                   <Flame size={12} className="animate-bounce" />
-                  <span>Nurturing talent, building discipline</span>
+                  <span>Empowering Youth through street choreography</span>
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black tracking-tight leading-none text-white uppercase">
-                  DANCE WITH <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">SIZZY AFRO</span>
+                  DANCE WITH <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm">SIZZY AFRO</span>
                 </h1>
 
                 <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
-                  A youth-focused dance organization in Mbarara, Uganda, dedicated to transforming street children, orphans, and beginner dancers into artistic global performers. Founded from the passion to empower young people and foster excellence.
+                  A premium youth-focused dance organization in Mbarara, Uganda, dedicated to transforming street children, orphans, and beginner dancers into global artistic performers. Founded from the pure passion to foster discipline, creativity, and elite talent.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <a
                     href="#events"
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider text-center cursor-pointer shadow-lg hover:scale-[1.01] transition-transform"
+                    className="w-full sm:w-auto px-7 py-4 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider text-center cursor-pointer shadow-lg hover:shadow-orange-500/20 active:scale-98 transition-all hover:scale-[1.02]"
                   >
                     REGISTER FOR WORKSHOP NOW
                   </a>
                   <a
                     href="#about"
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-white font-extrabold text-xs uppercase tracking-wider text-center cursor-pointer hover:bg-slate-850 transition-colors"
+                    className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-950/60 border border-slate-800 text-white font-extrabold text-xs uppercase tracking-wider text-center cursor-pointer hover:bg-slate-900 hover:border-slate-700 transition-all active:scale-98"
                   >
                     OUR STORY (2025)
                   </a>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-900/80">
+                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/60">
                   <div>
-                    <span className="block text-2xl font-display font-black text-white">450+</span>
-                    <span className="text-[10px] text-slate-500 font-mono uppercase tracking-widest block font-bold">Youth Empowered</span>
+                    <span className="block text-3xl font-display font-black text-white">450+</span>
+                    <span className="text-[10px] text-slate-450 font-mono uppercase tracking-widest block font-bold mt-1">Youth Empowered</span>
                   </div>
                   <div>
-                    <span className="block text-2xl font-display font-black text-white">12+</span>
-                    <span className="text-[10px] text-slate-500 font-mono uppercase tracking-widest block font-bold">Dance Trophies</span>
+                    <span className="block text-3xl font-display font-black text-white">12+</span>
+                    <span className="text-[10px] text-slate-450 font-mono uppercase tracking-widest block font-bold mt-1">Dance Trophies</span>
                   </div>
                   <div>
-                    <span className="block text-2xl font-display font-black text-white">Mbarara</span>
-                    <span className="text-[10px] text-slate-500 font-mono uppercase tracking-widest block font-bold">Uganda Base</span>
+                    <span className="block text-3xl font-display font-black text-white">Mbarara</span>
+                    <span className="text-[10px] text-slate-450 font-mono uppercase tracking-widest block font-bold mt-1">Uganda Base</span>
                   </div>
                 </div>
               </div>
 
               {/* Display Image */}
-              <div className="col-span-1 lg:col-span-6 relative h-[400px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+              <div className="col-span-1 lg:col-span-6 relative h-[400px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl group">
                 <img
                   src={typeof heroDanceImg === "string" ? heroDanceImg : (heroDanceImg as any).src || ""}
                   alt="Twinomujuni Emmanuel Sizzy Afro Street Choreography"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 bg-slate-950/80 backdrop-blur-md border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-4 left-4 right-4 bg-slate-950/90 backdrop-blur-md border border-slate-800/80 p-4 rounded-xl flex items-center justify-between gap-4">
                   <div>
-                    <span className="text-[9px] font-mono text-orange-400 font-black uppercase">Ghetto Foundation</span>
+                    <span className="text-[9px] font-mono text-orange-400 font-black uppercase tracking-wider">Humble Street Roots</span>
                     <span className="block text-xs font-black text-white">Twinomujuni Emmanuel (Sizzy Afro)</span>
                   </div>
                   <PinIcon text="Lakeside" />
@@ -2197,11 +2238,11 @@ export default function App() {
 // Inline pure Helper Components with absolute zero overhead
 function ValueCard({ title, text, icon }: { title: string; text: string; icon: string }) {
   return (
-    <div className="p-4 rounded-xl bg-slate-950 border border-slate-850 hover:border-orange-500/20 transition-all flex flex-col justify-between">
+    <div className="p-5 rounded-2xl bg-slate-950/40 backdrop-blur-sm border border-slate-900 hover:border-orange-500/30 hover:shadow-[0_0_15px_rgba(249,115,22,0.06)] hover:scale-[1.01] transition-all duration-300 flex flex-col justify-between group">
       <div>
-        <span className="text-xl block mb-2 leading-none">{icon}</span>
-        <h4 className="text-xs font-display font-black text-white uppercase tracking-wider">{title}</h4>
-        <p className="text-[10px] text-slate-400 mt-1 leading-normal">{text}</p>
+        <span className="text-2xl block mb-3 leading-none filter drop-shadow-[0_2px_8px_rgba(249,115,22,0.15)] group-hover:scale-110 transition-transform duration-300">{icon}</span>
+        <h4 className="text-xs font-display font-black text-white uppercase tracking-wider leading-snug group-hover:text-orange-400 transition-colors">{title}</h4>
+        <p className="text-[10.5px] text-slate-400 mt-1.5 leading-relaxed font-sans">{text}</p>
       </div>
     </div>
   );
@@ -2209,9 +2250,9 @@ function ValueCard({ title, text, icon }: { title: string; text: string; icon: s
 
 function PinIcon({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-950 border border-slate-850 rounded-lg shrink-0">
+    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-950/90 border border-slate-800 rounded-lg shrink-0">
       <MapPin className="text-orange-500" size={11} />
-      <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest">{text}</span>
+      <span className="text-[9px] font-mono font-bold text-slate-350 uppercase tracking-widest">{text}</span>
     </div>
   );
 }

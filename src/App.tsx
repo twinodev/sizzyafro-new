@@ -492,10 +492,10 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3 group">
             <span className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center font-display font-black text-black text-xl shadow-md group-hover:rotate-6 transition-all duration-300">
-              S
+              D
             </span>
             <div>
-              <span className="block font-display font-black leading-none text-white tracking-tight uppercase group-hover:text-orange-400 transition-colors">SIZ-AFRO</span>
+              <span className="block font-display font-black leading-none text-white tracking-tight uppercase group-hover:text-orange-400 transition-colors">DANCE WITH SIZZY AFRO</span>
               <span className="text-[9px] font-mono font-bold tracking-widest text-orange-500/80">Mbarara • Est 2025</span>
             </div>
           </a>

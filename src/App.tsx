@@ -154,7 +154,7 @@ export default function App() {
     } else if (currentView === "about") {
       title = "About Sizzy Afro | Nurturing & Transforming Youth";
     } else if (currentView === "contact") {
-      title = "Contact Sizzy Afro | Classes in Mbarara Lakeside";
+      title = "Contact Sizzy Afro | Classes in Youth Center Lugazi Mbarara";
     } else if (currentView === "event-detail") {
       const ev = appState?.events.find(e => e.id === selectedSubItem);
       title = ev ? `${ev.title} - Detailed Event Info | Sizzy Afro` : title;
@@ -694,7 +694,7 @@ export default function App() {
                     <span className="text-[9px] font-mono text-orange-400 font-black uppercase tracking-wider">Humble Street Roots</span>
                     <span className="block text-xs font-black text-white">Twinomujuni Emmanuel (Sizzy Afro)</span>
                   </div>
-                  <PinIcon text="Lakeside" />
+                  <PinIcon text="Youth Center Lugazi" />
                 </div>
               </div>
             </section>
@@ -1475,7 +1475,7 @@ export default function App() {
                     </div>
 
                     <a
-                      href={`https://wa.me/256700000000?text=Hi%20Sizzy%20Afro!%20I%20want%20to%20order%2520the%2520${encodeURIComponent(item.name)}%2520for%2520$${item.price}.`}
+                      href={`https://wa.me/${currentSettings.whatsappNumber || "256758359591"}?text=Hi%20Sizzy%20Afro!%20I%20want%20to%20order%2520the%2520${encodeURIComponent(item.name)}%2520for%2520$${item.price}.`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-black rounded-xl font-black text-xs uppercase tracking-wider text-center block shadow-lg cursor-pointer"
@@ -1772,16 +1772,16 @@ export default function App() {
               {/* Physical Coordinates */}
               <div className="p-6 bg-slate-900 border border-slate-800 rounded-3xl flex flex-col justify-between space-y-6">
                 <div className="space-y-4">
-                  <h4 className="text-xs font-mono font-black text-amber-400 uppercase tracking-wider">The Lakeside Headquarters</h4>
+                  <h4 className="text-xs font-mono font-black text-amber-400 uppercase tracking-wider">The Lugazi Headquarters</h4>
                   
                   <div className="space-y-3.5 text-xs text-slate-300">
                     <div className="flex items-center gap-2.5">
                       <MapPin className="text-orange-500 shrink-0" size={14} />
-                      <span>Lakeside National Gym, Mbarara City, Uganda</span>
+                      <span>Youth Center Lugazi Mbarara, Uganda</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <Phone className="text-orange-500 shrink-0" size={14} />
-                      <span>+256 700 000 000 (WhatsApp)</span>
+                      <span>0758359591 / 0766796585 (WhatsApp)</span>
                     </div>
                     <div className="flex items-center gap-2.5">
                       <Mail className="text-orange-500 shrink-0" size={14} />
@@ -1835,7 +1835,7 @@ export default function App() {
               <span className="font-display font-black text-white text-md uppercase">Dance With Sizzy Afro</span>
             </a>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              Established in 2025. Nurturing Street dance talent, youth discipline, and cultural excellence in Mbarara Lakeside, Uganda.
+              Established in 2025. Nurturing Street dance talent, youth discipline, and cultural excellence in Youth Center Lugazi Mbarara, Uganda.
             </p>
           </div>
 

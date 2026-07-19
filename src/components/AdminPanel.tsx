@@ -878,7 +878,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
                     <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Location Venue</label>
                     <input
                       type="text"
-                      placeholder="Lakeside National Gym, Mbarara (UG)"
+                      placeholder="Youth Center Lugazi Mbarara"
                       value={eventForm.location || ""}
                       onChange={(e) => setEventForm({...eventForm, location: e.target.value})}
                       className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-xs font-medium text-white"

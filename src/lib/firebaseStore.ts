@@ -246,7 +246,7 @@ export const DEFAULT_EVENTS: EventItem[] = [
     description: "Our signature energetic dance training. Explore traditional Ugandan drums combined with Amapiano choreography, street footwork, and urban breaking transitions. Open for youth, children, and beginners.",
     date: "Every Saturday",
     time: "4:00 PM - 5:30 PM",
-    location: "Lakeside National Gym, Mbarara (UG)",
+    location: "Youth Center Lugazi Mbarara",
     flyer_url: "https://picsum.photos/seed/afrodanceworkshop/800/600",
     cta_text: "CLAIM FREE SATURDAY TICKET",
     cta_link: "#rsvp",
@@ -304,7 +304,7 @@ export const DEFAULT_POSTS: BlogPost[] = [
     slug: "breaking-down-modern-amapiano-choreo",
     title: "The Ultimate Guide to Amapiano Grooves: Syncopation, Vibe, and Spirit",
     excerpt: "Amapiano has taken the globe by storm. In this visual post, we breakdown the major leg grooves, head movements, and the cultural spiritual connection.",
-    content: "### Feel the Log Drum: The Essence of Amapiano\n\nAmapiano is not just a beat; it is a full spirit which originated from South Africa and is now taking over Kampala, Kigali, and Mbarara.\n\nOur head coach **Sizzy Afro** breaks down the essential parts to practice at home:\n\n* **The Bounce (Low Center of Gravity)**: Flex your knees, stay loose, and move your weight in sync with the heavy bassline.\n* **The Footwork**: Subtle heel-toe locks that follow the syncopation of the snare clicks.\n* **The Expression**: Dancing Amapiano is conversational. Let your smile and shoulders talk to the beat.\n\nJoin our weekly classes at Lakeside Gym to master this craft live!\n\n[View Class Schedule](#events)",
+    content: "### Feel the Log Drum: The Essence of Amapiano\n\nAmapiano is not just a beat; it is a full spirit which originated from South Africa and is now taking over Kampala, Kigali, and Mbarara.\n\nOur head coach **Sizzy Afro** breaks down the essential parts to practice at home:\n\n* **The Bounce (Low Center of Gravity)**: Flex your knees, stay loose, and move your weight in sync with the heavy bassline.\n* **The Footwork**: Subtle heel-toe locks that follow the syncopation of the snare clicks.\n* **The Expression**: Dancing Amapiano is conversational. Let your smile and shoulders talk to the beat.\n\nJoin our weekly classes at Youth Center Lugazi Mbarara to master this craft live!\n\n[View Class Schedule](#events)",
     category: "Tutorial",
     author: "Sarah Namara",
     date: "2026-06-12",
@@ -346,7 +346,7 @@ export const DEFAULT_VIDEOS: VideoItem[] = [
   {
     id: "video-2",
     title: "Afro-Fusion & Amapiano Masterclass Highlight - Mbarara",
-    description: "Quick look at our signature fusion routines taught by Emmanuel of Sizzy Afro at Lakeside Mbarara.",
+    description: "Quick look at our signature fusion routines taught by Emmanuel of Sizzy Afro at Youth Center Lugazi Mbarara.",
     youtube_id: "SMRgN_yU8Zg",
     date: "2026-02-15"
   }
@@ -386,12 +386,12 @@ export const DEFAULT_PARTNER_LOGOS: PartnerLogo[] = [
   { id: "p1", name: "Uganda DanceSport", logo_url: "https://picsum.photos/seed/partnerlogo1/150/60" },
   { id: "p2", name: "Mbarara City Youth Aid", logo_url: "https://picsum.photos/seed/partnerlogo2/150/60" },
   { id: "p3", name: "Ministry of Culture & Youth", logo_url: "https://picsum.photos/seed/partnerlogo3/150/60" },
-  { id: "p4", name: "Lakeside Sports Gym", logo_url: "https://picsum.photos/seed/partnerlogo4/150/60" }
+  { id: "p4", name: "Lugazi Community Youth Center", logo_url: "https://picsum.photos/seed/partnerlogo4/150/60" }
 ];
 
 export const DEFAULT_SETTINGS = {
   adminPasswordHash: "12345", // Simple default pass plain (admin screen has safe input)
-  whatsappNumber: "256700000000", // Standard international Ugandan number format
+  whatsappNumber: "256758359591", // Standard international Ugandan number format
   googleMapsReviewLink: "https://g.page/r/sizzyafro-mbarara/review",
   isConfigured: true
 };

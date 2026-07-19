@@ -513,6 +513,7 @@ export default function App() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
             {[
+              { id: "home", label: "Home" },
               { id: "about", label: "About" },
               { id: "team", label: "Our Team" },
               { id: "events", label: "Events" },
@@ -585,6 +586,7 @@ export default function App() {
           >
             <div className="grid grid-cols-2 gap-4 text-xs font-black uppercase text-slate-350">
               {[
+                { id: "home", label: "Home" },
                 { id: "about", label: "About" },
                 { id: "team", label: "Our Team" },
                 { id: "events", label: "Events" },
@@ -721,9 +723,9 @@ export default function App() {
               {/* Box 1: Scheduled Workshops */}
               <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 relative overflow-hidden group">
                 <span className="text-[9px] font-mono text-orange-400 font-black tracking-wider block mb-2 uppercase">Training Schedules</span>
-                <h4 className="text-xl font-display font-black text-white uppercase">Upcoming Workshops</h4>
-                <p className="text-xs text-slate-400 mt-1 mb-4">View scheduled Saturdays, street clashes, and choreography programs in Mbarara.</p>
-                <div className="space-y-3">
+                <h4 className="text-xl font-display font-black text-white uppercase mb-1">Upcoming Workshops</h4>
+                <p className="text-xs text-slate-400 mb-4">View scheduled Saturdays, street clashes, and choreography programs in Mbarara.</p>
+                <div className="space-y-4">
                   {appState.events.slice(0, 2).map(ev => {
                     const currentRsvps = (appState?.rsvps || []).filter((r) => r.eventId === ev.id).length;
                     const capacity = ev.capacity || 150;
@@ -732,20 +734,49 @@ export default function App() {
                     const isFewSpots = !isFull && spotsLeft > 0 && (spotsLeft <= 15 || currentRsvps / capacity >= 0.85);
 
                     return (
-                      <div key={ev.id} className="p-3 bg-slate-950/60 rounded-xl border border-slate-850 flex items-center justify-between">
-                        <div>
-                          <span className="block text-xs font-bold text-white uppercase leading-tight">{ev.title}</span>
-                          <span className="text-[9px] text-slate-400 font-mono">
-                            {ev.date} - {ev.time} • {isFull ? (
-                              <span className="text-rose-400 font-extrabold animate-pulse">FULL</span>
-                            ) : isFewSpots ? (
-                              <span className="text-amber-400 font-extrabold">Few Spots Left ({spotsLeft} left)</span>
-                            ) : (
-                              <span className="text-emerald-400 font-bold">Open</span>
-                            )}
-                          </span>
+                      <div key={ev.id} className="bg-slate-950/80 rounded-xl border border-slate-850 overflow-hidden flex flex-col sm:flex-row gap-4 p-3 hover:border-orange-500/50 transition-all duration-300">
+                        {ev.flyer_url && (
+                          <div className="w-full sm:w-28 h-28 rounded-lg overflow-hidden shrink-0 relative bg-slate-900 border border-slate-800">
+                            <img 
+                              src={ev.flyer_url} 
+                              alt={ev.title} 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              referrerPolicy="no-referrer"
+                            />
+                            <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-black/85 text-[8px] font-mono font-black text-orange-400 rounded uppercase">
+                              {ev.category || "Workshop"}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex-1 flex flex-col justify-between py-0.5">
+                          <div>
+                            <span className="block text-sm font-black text-white uppercase leading-snug hover:text-orange-400 transition-colors">
+                              <a href={`#/event-detail/${ev.id}`}>{ev.title}</a>
+                            </span>
+                            <p className="text-[11px] text-slate-400 line-clamp-1 mt-1 font-sans">{ev.description}</p>
+                          </div>
+                          
+                          <div className="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-900/80">
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {ev.date} • {ev.time}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              {isFull ? (
+                                <span className="text-rose-400 text-[9px] font-mono font-black animate-pulse">FULL</span>
+                              ) : isFewSpots ? (
+                                <span className="text-amber-400 text-[9px] font-mono font-black">FEW SPOTS</span>
+                              ) : (
+                                <span className="text-emerald-400 text-[9px] font-mono font-bold">OPEN</span>
+                              )}
+                              <a 
+                                href={`#/event-detail/${ev.id}`} 
+                                className="px-2.5 py-1 bg-orange-500 hover:bg-orange-600 text-black text-[9px] font-black rounded uppercase tracking-wider transition-colors inline-block"
+                              >
+                                View Flyer
+                              </a>
+                            </div>
+                          </div>
                         </div>
-                        <a href={`#/event-detail/${ev.id}`} className="p-2 bg-orange-500 text-black text-[9px] font-black rounded-lg uppercase shrink-0 ml-2">VIEW Flyer</a>
                       </div>
                     );
                   })}
@@ -758,16 +789,44 @@ export default function App() {
               {/* Box 2: Latest Articles blog */}
               <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 relative overflow-hidden group">
                 <span className="text-[9px] font-mono text-amber-500 font-black tracking-wider block mb-2 uppercase">Inspirational stories</span>
-                <h4 className="text-xl font-display font-black text-white uppercase">The Street dancer Read</h4>
-                <p className="text-xs text-slate-400 mt-1 mb-4">Learn how urban dance serves as a tool for leadership, empowerment, and change.</p>
-                <div className="space-y-3">
+                <h4 className="text-xl font-display font-black text-white uppercase mb-1">The Street dancer Read</h4>
+                <p className="text-xs text-slate-400 mb-4">Learn how urban dance serves as a tool for leadership, empowerment, and change.</p>
+                <div className="space-y-4">
                   {appState.posts.slice(0, 2).map(post => (
-                    <div key={post.id} className="p-3 bg-slate-950/60 rounded-xl border border-slate-850 flex items-center justify-between">
-                      <div>
-                        <span className="block text-xs font-bold text-white leading-tight uppercase">{post.title}</span>
-                        <span className="text-[9px] text-slate-500 font-mono">By {post.author}</span>
+                    <div key={post.id} className="bg-slate-950/80 rounded-xl border border-slate-850 overflow-hidden flex flex-col sm:flex-row gap-4 p-3 hover:border-amber-500/50 transition-all duration-300">
+                      {post.image_url && (
+                        <div className="w-full sm:w-28 h-28 rounded-lg overflow-hidden shrink-0 relative bg-slate-900 border border-slate-800">
+                          <img 
+                            src={post.image_url} 
+                            alt={post.title} 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            referrerPolicy="no-referrer"
+                          />
+                          <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-black/85 text-[8px] font-mono font-black text-amber-400 rounded uppercase">
+                            {post.category || "Story"}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex-1 flex flex-col justify-between py-0.5">
+                        <div>
+                          <span className="block text-sm font-black text-white uppercase leading-snug hover:text-amber-400 transition-colors">
+                            <a href={`#/post-detail/${post.id}`}>{post.title}</a>
+                          </span>
+                          <p className="text-[11px] text-slate-400 line-clamp-1 mt-1 font-sans">{post.excerpt}</p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-900/80">
+                          <span className="text-[10px] text-slate-500 font-mono">
+                            By {post.author} • {post.date}
+                          </span>
+                          <a 
+                            href={`#post-detail/${post.id}`} 
+                            className="inline-flex items-center gap-1.5 text-[10px] font-mono font-black text-amber-400 hover:text-white transition-colors uppercase"
+                          >
+                            Read Story <Eye size={12} />
+                          </a>
+                        </div>
                       </div>
-                      <a href={`#post-detail/${post.id}`} className="text-xs text-amber-500 hover:text-white font-bold p-1"><Eye size={14} /></a>
                     </div>
                   ))}
                 </div>

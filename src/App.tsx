@@ -9,7 +9,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 
 // Asset Import
-import heroDanceImg from "./assets/images/hero_dance_sizzy_1781716944039.jpg";
+import heroDanceImg from "./assets/images/hero (1).jpg";
 
 // Sub-components & Stores
 import AdminPanel from "./components/AdminPanel";

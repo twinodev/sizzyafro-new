@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   Plus, Edit2, Trash2, Settings, MessageSquare, Briefcase, 
-  DollarSign, Users, Calendar, BookOpen, Video, LogOut, Check, ArrowRight, Ticket, HeartHandshake
+  DollarSign, Users, Calendar, BookOpen, Video, LogOut, Check, ArrowRight, Ticket, HeartHandshake, Star
 } from "lucide-react";
 import { 
   saveSegment, TeamMember, EventItem, BlogPost, MerchandiseItem, 
@@ -40,7 +40,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   const [pin, setPin] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
-  const [activeTab, setActiveTab] = useState<"team" | "events" | "posts" | "merch" | "videos" | "inbox" | "settings" | "rsvps" | "partners">("team");
+  const [activeTab, setActiveTab] = useState<"team" | "events" | "posts" | "merch" | "videos" | "inbox" | "settings" | "rsvps" | "partners" | "testimonials">("team");
 
   // Local operational state
   const [teamList, setTeamList] = useState<TeamMember[]>(initialData.team);
@@ -50,6 +50,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   const [videoList, setVideoList] = useState<VideoItem[]>(initialData.videos);
   const [rsvpList, setRsvpList] = useState<EventRSVP[]>(initialData.rsvps || []);
   const [partnerLogosList, setPartnerLogosList] = useState<PartnerLogo[]>(initialData.partnerLogos || []);
+  const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialData.testimonials || []);
   
   // Settings state
   const [whatsapp, setWhatsapp] = useState(initialData.meta.whatsappNumber || "256700000000");
@@ -67,6 +68,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
   const [merchForm, setMerchForm] = useState<Partial<MerchandiseItem>>({ id: "", name: "", price: 0, description: "", image_url: "", stock: 10, sizes: ["M", "L"] });
   const [videoForm, setVideoForm] = useState<Partial<VideoItem>>({ id: "", title: "", description: "", youtube_id: "" });
   const [partnerLogoForm, setPartnerLogoForm] = useState<Partial<PartnerLogo>>({ id: "", name: "", logo_url: "" });
+  const [testimonialForm, setTestimonialForm] = useState<Partial<Testimonial>>({ id: "", author: "", role: "Street Dancer", content: "", rating: 5, approved: true });
 
   const [savingState, setSavingState] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -79,6 +81,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
     setVideoList(initialData.videos);
     setRsvpList(initialData.rsvps || []);
     setPartnerLogosList(initialData.partnerLogos || []);
+    setTestimonialsList(initialData.testimonials || []);
     setWhatsapp(initialData.meta.whatsappNumber || "256700000000");
     setGoogleReviews(initialData.meta.googleMapsReviewLink || "");
   }, [initialData]);
@@ -360,6 +363,46 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
     }
   };
 
+  // Testimonial Management
+  const saveTestimonial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingState(true);
+    let updated: Testimonial[];
+
+    if (testimonialForm.id) {
+      updated = testimonialsList.map(t => t.id === testimonialForm.id ? { ...t, ...testimonialForm } as Testimonial : t);
+    } else {
+      const newTestimonial: Testimonial = {
+        id: "test-" + Date.now().toString(),
+        author: testimonialForm.author || "Supporter",
+        role: testimonialForm.role || "Street Dancer",
+        content: testimonialForm.content || "",
+        rating: testimonialForm.rating || 5,
+        approved: testimonialForm.approved !== undefined ? testimonialForm.approved : true,
+        date: testimonialForm.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+      updated = [...testimonialsList, newTestimonial];
+    }
+
+    const success = await saveSegment("testimonials", updated);
+    if (success) {
+      setTestimonialsList(updated);
+      setTestimonialForm({ id: "", author: "", role: "Street Dancer", content: "", rating: 5, approved: true });
+      notifySave("Testimonial / Review saved successfully!");
+    }
+    setSavingState(false);
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    if (!confirm("Are you sure you want to remove this testimonial?")) return;
+    const updated = testimonialsList.filter(t => t.id !== id);
+    const success = await saveSegment("testimonials", updated);
+    if (success) {
+      setTestimonialsList(updated);
+      notifySave("Testimonial / Review removed.");
+    }
+  };
+
   // Settings Save
   const saveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -609,6 +652,17 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
             <HeartHandshake size={14} />
             <span>Scrolling Sponsors</span>
             <span className="ml-auto font-mono text-[9px] bg-slate-900 px-1.5 py-0.5 rounded-md text-slate-500">{partnerLogosList.length}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("testimonials")}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${
+              activeTab === "testimonials" ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" : "text-slate-300 hover:bg-slate-900"
+            }`}
+          >
+            <Star size={14} className={activeTab === "testimonials" ? "fill-orange-400" : ""} />
+            <span>Dancer Testimonials</span>
+            <span className="ml-auto font-mono text-[9px] bg-slate-900 px-1.5 py-0.5 rounded-md text-slate-500">{testimonialsList.length}</span>
           </button>
 
           <button
@@ -1496,6 +1550,182 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
                             >
                               <Trash2 size={13} />
                             </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 10: DANCER TESTIMONIALS & REVIEWS */}
+          {activeTab === "testimonials" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                  <h3 className="text-lg font-display font-extrabold text-white uppercase">Dancer Testimonials & Reviews</h3>
+                  <p className="text-xs text-slate-400 mt-1">Manage, moderate, and manually register community reviews & street stories.</p>
+                </div>
+                <span className="px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono font-bold rounded-full">
+                  Count: {testimonialsList.length}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Form to Create/Edit Testimonial */}
+                <form onSubmit={saveTestimonial} className="bg-slate-950 p-6 rounded-2xl border border-slate-850/80 space-y-4 lg:col-span-1 h-fit">
+                  <h4 className="text-xs font-mono font-black text-slate-400 uppercase tracking-wider">
+                    {testimonialForm.id ? "Edit Review" : "Add Direct Review"}
+                  </h4>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Author Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Akram Lubega"
+                      value={testimonialForm.author || ""}
+                      onChange={(e) => setTestimonialForm({ ...testimonialForm, author: e.target.value })}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Role / Title</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Street Dancer / Ghetto Youth Student"
+                      value={testimonialForm.role || ""}
+                      onChange={(e) => setTestimonialForm({ ...testimonialForm, role: e.target.value })}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Rating (Stars)</label>
+                    <select
+                      value={testimonialForm.rating || 5}
+                      onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: Number(e.target.value) })}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white"
+                    >
+                      <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                      <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                      <option value="3">⭐⭐⭐ (3 Stars)</option>
+                      <option value="2">⭐⭐ (2 Stars)</option>
+                      <option value="1">⭐ (1 Star)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 uppercase mb-1.5 font-black">Review Content</label>
+                    <textarea
+                      placeholder="Share their testimony or review text..."
+                      value={testimonialForm.content || ""}
+                      onChange={(e) => setTestimonialForm({ ...testimonialForm, content: e.target.value })}
+                      rows={4}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white resize-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2 py-1">
+                    <input
+                      type="checkbox"
+                      id="testimonial-approved-cb"
+                      checked={testimonialForm.approved !== false}
+                      onChange={(e) => setTestimonialForm({ ...testimonialForm, approved: e.target.checked })}
+                      className="w-4 h-4 text-orange-500 bg-slate-900 border-slate-800 rounded focus:ring-0 cursor-pointer"
+                    />
+                    <label htmlFor="testimonial-approved-cb" className="text-xs text-slate-300 font-mono select-none cursor-pointer">
+                      Approved & Live on Site
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <button
+                      type="submit"
+                      disabled={savingState}
+                      className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-black text-xs font-black uppercase tracking-wider rounded-xl cursor-pointer"
+                    >
+                      {savingState ? "Saving..." : testimonialForm.id ? "Apply Changes" : "Submit Review"}
+                    </button>
+                    {testimonialForm.id && (
+                      <button
+                        type="button"
+                        onClick={() => setTestimonialForm({ id: "", author: "", role: "Street Dancer", content: "", rating: 5, approved: true })}
+                        className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-400 text-xs font-bold rounded-xl"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                {/* List of Testimonials */}
+                <div className="lg:col-span-2 space-y-4">
+                  <h4 className="text-xs font-mono font-black text-slate-400 uppercase tracking-wider">Dancer Voices & Reviews List</h4>
+                  {testimonialsList.length === 0 ? (
+                    <div className="p-8 text-center bg-slate-950 border border-slate-850 rounded-2xl">
+                      <p className="text-xs text-slate-400">No testimonials or reviews submitted yet.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {testimonialsList.map((test) => (
+                        <div key={test.id} className="p-5 bg-slate-950 border border-slate-850 rounded-2xl space-y-3">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h5 className="text-sm font-black text-white">{test.author}</h5>
+                                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full ${
+                                  test.approved !== false 
+                                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+                                    : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                                }`}>
+                                  {test.approved !== false ? "Approved" : "Pending Moderation"}
+                                </span>
+                              </div>
+                              <span className="text-xs text-slate-400 block font-mono">{test.role}</span>
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => setTestimonialForm(test)}
+                                className="p-1.5 bg-slate-900 border border-slate-850 hover:bg-slate-800 hover:text-white text-slate-400 rounded-lg transition-colors cursor-pointer"
+                                title="Edit Review"
+                              >
+                                <Edit2 size={13} />
+                              </button>
+                              <button
+                                onClick={() => deleteTestimonial(test.id)}
+                                className="p-1.5 bg-slate-900 border border-slate-850 hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-400 text-slate-400 rounded-lg transition-colors cursor-pointer"
+                                title="Delete Review"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            {Array.from({ length: 5 }).map((_, index) => (
+                              <Star
+                                key={index}
+                                size={12}
+                                className={index < test.rating ? "fill-orange-500 text-orange-500" : "text-slate-700"}
+                              />
+                            ))}
+                            <span className="text-[10px] font-mono text-slate-500 ml-1.5">Rating: {test.rating}/5</span>
+                          </div>
+
+                          <p className="text-xs text-slate-300 leading-relaxed italic">
+                            "{test.content}"
+                          </p>
+
+                          <div className="pt-2 border-t border-slate-900 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                            <span>ID: {test.id}</span>
+                            <span>Date: {test.date || "N/A"}</span>
                           </div>
                         </div>
                       ))}

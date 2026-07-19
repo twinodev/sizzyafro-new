@@ -8,7 +8,7 @@ import {
 import { 
   saveSegment, TeamMember, EventItem, BlogPost, MerchandiseItem, 
   VideoItem, Testimonial, ContactMessage, PartnershipApplication, DonationRecord,
-  NewsletterSubscription, EventRSVP, PartnerLogo
+  NewsletterSubscription, EventRSVP, PartnerLogo, getDirectImageUrl
 } from "../lib/firebaseStore";
 
 interface AdminPanelProps {
@@ -786,7 +786,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
                     {teamList.map((member) => (
                       <div key={member.id} className="p-3 bg-slate-950 border border-slate-850 rounded-xl flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <img src={member.profile_picture} alt={member.name} className="w-10 h-10 rounded-full object-cover border border-slate-800" />
+                          <img src={getDirectImageUrl(member.profile_picture)} alt={member.name} className="w-10 h-10 rounded-full object-cover border border-slate-800" />
                           <div>
                             <span className="block text-xs font-black text-white">{member.name}</span>
                             <span className="text-[10px] text-orange-400 font-bold">{member.role}</span>
@@ -1209,7 +1209,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
                     {merchList.map((item) => (
                       <div key={item.id} className="p-3 bg-slate-950 border border-slate-850 rounded-xl flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <img src={item.image_url} alt={item.name} className="w-10 h-10 rounded object-cover border border-slate-800" />
+                          <img src={getDirectImageUrl(item.image_url)} alt={item.name} className="w-10 h-10 rounded object-cover border border-slate-800" />
                           <div>
                             <span className="block text-xs font-bold text-white">{item.name}</span>
                             <span className="text-[10px] text-emerald-400 font-mono font-bold">${item.price.toFixed(2)} — In Stock: {item.stock}</span>
@@ -1516,7 +1516,7 @@ export default function AdminPanel({ initialData, onSave, onClose }: AdminPanelP
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-16 h-10 bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden border border-slate-800/80 p-1 shrink-0">
                               <img
-                                src={logo.logo_url}
+                                src={getDirectImageUrl(logo.logo_url)}
                                 alt={logo.name}
                                 className="max-w-full max-h-full object-contain filter brightness-90 contrast-125"
                                 onError={(e) => {

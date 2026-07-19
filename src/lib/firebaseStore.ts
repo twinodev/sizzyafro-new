@@ -11,6 +11,43 @@ export enum OperationType {
   WRITE = 'write',
 }
 
+// Helper to convert Google Drive URL or File ID into a direct hotlinkable image URL
+export function getDirectImageUrl(input: string): string {
+  if (!input) return "";
+  
+  const trimmed = input.trim();
+  
+  // 1. If it's a full Google Drive link, extract the ID
+  // Examples:
+  // - https://drive.google.com/file/d/1u_S2B3CD.../view
+  // - https://drive.google.com/open?id=1u_S2B3CD...
+  // - https://docs.google.com/file/d/1u_S2B3CD.../edit
+  const driveUrlRegex = /(?:https?:\/\/)?(?:drive|docs)\.google\.com\/(?:file\/d\/|open\?id=)([^/?#&\s]+)/i;
+  const match = trimmed.match(driveUrlRegex);
+  
+  if (match && match[1]) {
+    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  }
+  
+  // 2. If it is already a direct googleusercontent link, return as is
+  if (trimmed.includes("googleusercontent.com/d/")) {
+    return trimmed;
+  }
+  
+  // 3. If it looks like a relative/absolute URL (starts with http, https, or /), return as is
+  if (/^(https?:\/\/|\/|\.\/)/i.test(trimmed)) {
+    return trimmed;
+  }
+  
+  // 4. Otherwise, treat the entire string as a Google Drive file ID
+  // Google Drive IDs are typically alphanumeric, underscores, hyphens, usually 33 characters
+  if (trimmed.length >= 10 && !trimmed.includes(" ") && !trimmed.includes(".")) {
+    return `https://lh3.googleusercontent.com/d/${trimmed}`;
+  }
+  
+  return trimmed;
+}
+
 export interface FirestoreErrorInfo {
   error: string;
   operationType: OperationType;

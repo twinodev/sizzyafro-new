@@ -17,7 +17,7 @@ import AdminPanel from "./components/AdminPanel";
 import { 
   fetchAllAppData, getDefaultAppData, saveSegment, clearCache, TeamMember, EventItem, BlogPost, 
   MerchandiseItem, VideoItem, Testimonial, ContactMessage, PartnershipApplication, DonationRecord,
-  NewsletterSubscription, EventRSVP
+  NewsletterSubscription, EventRSVP, getDirectImageUrl
 } from "./lib/firebaseStore";
 
 export default function App() {
@@ -620,7 +620,7 @@ export default function App() {
             <div key={`${partner.id}-${idx}`} className="flex items-center gap-3 px-8 py-1 shrink-0 border-r border-slate-900/60">
               <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-slate-800 bg-slate-900 flex items-center justify-center">
                 <img 
-                  src={partner.logo_url} 
+                  src={getDirectImageUrl(partner.logo_url)} 
                   alt={partner.name} 
                   className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" 
                   referrerPolicy="no-referrer"
@@ -745,7 +745,7 @@ export default function App() {
                         {ev.flyer_url && (
                           <div className="w-full sm:w-28 h-28 rounded-lg overflow-hidden shrink-0 relative bg-slate-900 border border-slate-800">
                             <img 
-                              src={ev.flyer_url} 
+                              src={getDirectImageUrl(ev.flyer_url)} 
                               alt={ev.title} 
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               referrerPolicy="no-referrer"
@@ -804,7 +804,7 @@ export default function App() {
                       {post.image_url && (
                         <div className="w-full sm:w-28 h-28 rounded-lg overflow-hidden shrink-0 relative bg-slate-900 border border-slate-800">
                           <img 
-                            src={post.image_url} 
+                            src={getDirectImageUrl(post.image_url)} 
                             alt={post.title} 
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             referrerPolicy="no-referrer"
@@ -919,7 +919,7 @@ export default function App() {
                 <div key={member.id} className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl flex flex-col justify-between overflow-hidden relative group">
                   <div className="space-y-4">
                     <div className="relative h-56 rounded-xl overflow-hidden border border-slate-800">
-                      <img src={member.profile_picture} alt={member.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={getDirectImageUrl(member.profile_picture)} alt={member.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                     <div>
                       <h3 className="font-display font-black text-white text-base uppercase leading-tight">{member.name}</h3>
@@ -1044,7 +1044,7 @@ export default function App() {
                   return (
                     <div key={ev.id} className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 items-center hover:border-slate-700/60 transition-all group">
                       <div className="lg:col-span-5 h-44 rounded-xl overflow-hidden border border-slate-800 relative bg-slate-950">
-                        <img src={ev.flyer_url} alt={ev.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src={getDirectImageUrl(ev.flyer_url)} alt={ev.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         
                         {/* Dynamic Category Pill on image */}
                         <span className={`absolute top-2 left-2 px-2 py-0.5 text-[8px] font-mono font-black uppercase rounded border z-10 ${
@@ -1179,7 +1179,7 @@ export default function App() {
                   </div>
 
                   <div className="relative h-[280px] rounded-2xl overflow-hidden border border-slate-800">
-                    <img src={ev.flyer_url} alt={ev.title} className="w-full h-full object-cover" />
+                    <img src={getDirectImageUrl(ev.flyer_url)} alt={ev.title} className="w-full h-full object-cover" />
                   </div>
 
                   <div className="space-y-2">
@@ -1258,7 +1258,7 @@ export default function App() {
                 <div key={post.id} className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden flex flex-col justify-between group">
                   <div>
                     <div className="relative h-52 rounded-b-2xl overflow-hidden border-b border-slate-800">
-                      <img src={post.image_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={getDirectImageUrl(post.image_url)} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       <span className="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md border border-slate-800 text-orange-400 text-[8px] font-mono tracking-wider font-extrabold px-2.5 py-1 rounded-md uppercase">
                         {post.category}
                       </span>
@@ -1334,7 +1334,7 @@ export default function App() {
 
                   {/* Header cover */}
                   <div className="relative h-64 sm:h-96 rounded-3xl overflow-hidden border border-slate-800">
-                    <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+                    <img src={getDirectImageUrl(post.image_url)} alt={post.title} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent" />
                     <span className="absolute bottom-4 left-4 bg-orange-500 text-black text-[9px] font-black uppercase font-mono px-3 py-1 rounded-md">
                       {post.category}
@@ -1467,7 +1467,7 @@ export default function App() {
               {appState.merchandise.map((item) => (
                 <div key={item.id} className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden p-4 flex flex-col justify-between group h-[420px]">
                   <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-800">
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" />
+                    <img src={getDirectImageUrl(item.image_url)} alt={item.name} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" />
                   </div>
 
                   <div className="space-y-2 mt-4">
@@ -1511,7 +1511,7 @@ export default function App() {
               return (
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
                   <div className="md:col-span-5 h-64 rounded-xl overflow-hidden border border-slate-800">
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                    <img src={getDirectImageUrl(item.image_url)} alt={item.name} className="w-full h-full object-cover" />
                   </div>
 
                   <div className="md:col-span-7 flex flex-col justify-between h-full space-y-4">

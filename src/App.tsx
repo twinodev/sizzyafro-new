@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 // Asset Import
 import heroDanceImg from "./assets/images/hero (1).jpg";
+import logoImg from "./assets/images/logo.png";
 
 // Sub-components & Stores
 import AdminPanel from "./components/AdminPanel";
@@ -491,9 +492,11 @@ export default function App() {
       <header className="sticky top-0 left-0 w-full z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-900/60 shadow-lg px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3 group">
-            <span className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center font-display font-black text-black text-xl shadow-md group-hover:rotate-6 transition-all duration-300">
-              D
-            </span>
+            <img 
+              src={typeof logoImg === "string" ? logoImg : (logoImg as any).src || ""} 
+              alt="Dance With Sizzy Afro Logo" 
+              className="w-10 h-10 object-cover rounded-xl shadow-md group-hover:rotate-6 transition-all duration-300 border border-slate-800"
+            />
             <div>
               <span className="block font-display font-black leading-none text-white tracking-tight uppercase group-hover:text-orange-400 transition-colors">DANCE WITH SIZZY AFRO</span>
               <span className="text-[9px] font-mono font-bold tracking-widest text-orange-500/80">Mbarara • Est 2025</span>
@@ -1817,7 +1820,11 @@ export default function App() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center border-b border-slate-900 pb-8 mb-8">
           <div className="space-y-3">
             <a href="#home" className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center font-display font-black text-black">S</span>
+              <img 
+                src={typeof logoImg === "string" ? logoImg : (logoImg as any).src || ""} 
+                alt="Dance With Sizzy Afro Logo" 
+                className="w-8 h-8 object-cover rounded-lg border border-slate-800"
+              />
               <span className="font-display font-black text-white text-md uppercase">Dance With Sizzy Afro</span>
             </a>
             <p className="text-[11px] text-slate-400 leading-relaxed">

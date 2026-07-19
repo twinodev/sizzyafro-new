@@ -406,7 +406,7 @@ export async function loadSegment<K extends keyof AppData>(segment: K): Promise<
     const docRef = doc(db, "danceAppState", segment);
     const snap = await Promise.race([
       getDoc(docRef),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000))
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Timeout")), 15000))
     ]);
     if (snap && snap.exists()) {
       const data = snap.data();

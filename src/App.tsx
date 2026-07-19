@@ -617,9 +617,16 @@ export default function App() {
       <div className="w-full bg-slate-950 border-y border-slate-900 overflow-hidden py-4 shrink-0">
         <div className="animate-scroll">
           {[...appState.partnerLogos, ...appState.partnerLogos, ...appState.partnerLogos].map((partner, idx) => (
-            <div key={`${partner.id}-${idx}`} className="flex items-center gap-2 px-8 py-1 shrink-0 border-r border-slate-900/60">
-              <img src={partner.logo_url} alt={partner.name} className="h-6 object-contain opacity-55 hover:opacity-100 transition-opacity" />
-              <span className="font-mono text-[9px] text-slate-500 tracking-wider uppercase font-extrabold">{partner.name}</span>
+            <div key={`${partner.id}-${idx}`} className="flex items-center gap-3 px-8 py-1 shrink-0 border-r border-slate-900/60">
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-slate-800 bg-slate-900 flex items-center justify-center">
+                <img 
+                  src={partner.logo_url} 
+                  alt={partner.name} 
+                  className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" 
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <span className="font-mono text-[9px] text-slate-400 tracking-wider uppercase font-extrabold">{partner.name}</span>
             </div>
           ))}
         </div>

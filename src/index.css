@@ -24,8 +24,8 @@ body {
     radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.06) 0%, transparent 40%);
   color: #f1f5f9;
   overflow-x: hidden;
-  font-size: 1.05rem; /* Slightly larger, more beautiful base size */
-  line-height: 1.65; /* Better line spacing for readability */
+  font-size: 1.15rem; /* Increased size for gorgeous readability */
+  line-height: 1.7; /* Proportional line spacing */
   position: relative;
 }
 

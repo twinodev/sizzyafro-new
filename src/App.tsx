@@ -465,7 +465,14 @@ export default function App() {
   const whatsappUrl = `https://wa.me/${currentSettings.whatsappNumber || "256700000000"}?text=Hello%20Sizzy%20Afro!%20I%20want%20to%20learn%20more%20about%20your%20youth%20dance%20programs%20and%20sponsorships.`;
 
   return (
-    <div className="selection:bg-orange-500 selection:text-black">
+    <div className="selection:bg-orange-500 selection:text-black relative min-h-screen">
+      
+      {/* COSMIC GRADIENT BLOBS WITH MOTION */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-600/10 blur-[120px] animate-blob-1" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-600/8 blur-[150px] animate-blob-2" />
+        <div className="absolute top-[40%] left-[30%] w-[45%] h-[45%] rounded-full bg-amber-500/6 blur-[130px] animate-blob-3" />
+      </div>
       
       {/* FLOATING SOCIAL ACTIONS */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
